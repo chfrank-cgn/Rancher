@@ -1,0 +1,12 @@
+#!/bin/sh
+apt-get update
+apt-get install -y apt-transport-https jq software-properties-common nfs-common rwho
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update
+apt-get -y install docker-ce=18.06.3~ce~3-0~ubuntu
+usermod -G docker -a rancher
+systemctl start rpc-statd.service
+systemctl enable rpc-statd.service
+${registration_command}
+exit 0

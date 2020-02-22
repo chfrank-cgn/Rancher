@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cinder
+provisioner: kubernetes.io/cinder
+reclaimPolicy: Delete
+parameters:
+  availability: nova
+

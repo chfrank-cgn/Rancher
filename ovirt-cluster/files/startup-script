@@ -1,0 +1,3 @@
+runcmd:
+- ${registration_command}
+

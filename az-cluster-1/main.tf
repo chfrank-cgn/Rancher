@@ -5,9 +5,9 @@ resource "random_id" "instance_id" {
  byte_length = 3
 }
 
-# Azure Cloud Credentials
+# Rancher cloud credentials
 resource "rancher2_cloud_credential" "credential_az" {
-  name = "Free Trial"
+  name = "Azure Credentials"
   azure_credential_config {
     client_id = var.az-client-id
     client_secret = var.az-client-secret
@@ -15,9 +15,9 @@ resource "rancher2_cloud_credential" "credential_az" {
   }
 }
 
-# Azure Node Template
+# Rancher node template
 resource "rancher2_node_template" "template_az" {
-  name = "RKE Node Template"
+  name = "Azure Node Template"
   cloud_credential_id = rancher2_cloud_credential.credential_az.id
   engine_install_url = var.dockerurl
   azure_config {
@@ -34,43 +34,59 @@ resource "rancher2_node_template" "template_az" {
   }
 }
 
-# Rancher cluster
-resource "rancher2_cluster" "cluster_az" {
-  name         = "az-${random_id.instance_id.hex}"
-  description  = "Terraform"
-
-  rke_config {
-    kubernetes_version = var.k8version
-    ignore_docker_version = false
-    cloud_provider {
-      name = "azure"
-      azure_cloud_provider {
-        aad_client_id = var.az-client-id
-        aad_client_secret = var.az-client-secret
-        subscription_id = var.az-subscription-id
-        tenant_id = var.az-tenant-id
-        resource_group = var.az-resource-group
+# Rancher cluster template 
+resource "rancher2_cluster_template" "template_az" {
+  name = "Azure Cluster Template"
+  template_revisions {
+    name = "v1"
+    default = true
+    cluster_config {
+      cluster_auth_endpoint {
+        enabled = false
       }
-    }
-    network {
-      plugin = "flannel"
-    }
-    services { 
-      etcd {
-        backup_config {
-          enabled = false
+      rke_config {
+        kubernetes_version = var.k8version
+        ignore_docker_version = false
+        cloud_provider {
+          name = "azure"
+          azure_cloud_provider {
+            aad_client_id = var.az-client-id
+            aad_client_secret = var.az-client-secret
+            subscription_id = var.az-subscription-id
+            tenant_id = var.az-tenant-id
+            resource_group = var.az-resource-group
+          }
         }
-      }
-      kubelet {
-        extra_args  = {
-          max_pods = 70
+        network {
+          plugin = "flannel"
+        }
+        services { 
+          etcd {
+            backup_config {
+              enabled = false
+            }
+          }
+          kubelet {
+            extra_args  = {
+              max_pods = 70
+            }
+          }
         }
       }
     }
   }
 }
 
-# Azure Node Pool
+# Rancher cluster
+resource "rancher2_cluster" "cluster_az" {
+  name         = "az-${random_id.instance_id.hex}"
+  description  = "Terraform"
+  cluster_template_id = rancher2_cluster_template.template_az.id
+  cluster_template_revision_id = rancher2_cluster_template.template_az.default_revision_id
+  depends_on = [rancher2_cluster_template.template_az]
+}
+
+# Rancher node pool
 resource "rancher2_node_pool" "nodepool_az" {
   cluster_id = rancher2_cluster.cluster_az.id
   name = "nodepool"

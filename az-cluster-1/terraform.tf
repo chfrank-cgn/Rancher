@@ -2,7 +2,7 @@
 
 terraform {
   backend "remote" {
-    organization = "xxxxxxxxxxx"
+    organization = "chfrank-cgn"
 
     workspaces {
       name = "compute-prod-westeurope"
@@ -14,7 +14,7 @@ terraform {
   required_providers {
     local = "~> 1.4"
     null = "~> 2.1"
-    rancher2 = "~> 1.7"
+    rancher2 = "~> 1.8"
     random = "~> 2.2"
   }
 }

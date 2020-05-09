@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.15.10-rancher1-1"
+	default = "v1.15.11-rancher1-3"
 }
 
 # Docker version
@@ -43,7 +43,7 @@ variable "az-resource-group" {
 
 # Azure Region
 variable "az-region" {
-	default = "westeurope"
+	default = "eastus"
 }
 
 # Azure Storage Type

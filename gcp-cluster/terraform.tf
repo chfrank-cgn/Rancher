@@ -2,7 +2,7 @@
 
 terraform {
   backend "remote" {
-    organization = "xxxxxxxxxxx"
+    organization = "chfrank-cgn"
 
     workspaces {
       name = "compute-prod-us-central"
@@ -12,10 +12,10 @@ terraform {
   required_version = ">= 0.12"
 
   required_providers {
-    google = "~> 3.4"
+    google = "~> 3.28"
     local = "~> 1.4"
     null = "~> 2.1"
-    rancher2 = "~> 1.7"
+    rancher2 = "~> 1.9"
     random = "~> 2.2"
     template = "~> 2.1"
   }

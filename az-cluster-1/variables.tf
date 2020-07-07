@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.15.11-rancher1-3"
+	default = "v1.15.12-rancher2-3"
 }
 
 # Docker version

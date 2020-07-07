@@ -32,6 +32,7 @@ resource "rancher2_node_template" "template_az" {
     size = var.type
     use_private_ip = false
   }
+  depends_on = [rancher2_cloud_credential.credential_az]
 }
 
 # Rancher cluster template 
@@ -75,6 +76,7 @@ resource "rancher2_cluster_template" "template_az" {
       }
     }
   }
+  depends_on = [rancher2_node_template.template_az]
 }
 
 # Rancher cluster
@@ -96,6 +98,7 @@ resource "rancher2_node_pool" "nodepool_az" {
   control_plane = true
   etcd = true
   worker = true
+  depends_on = [rancher2_cluster_template.template_az]
 }
 
 # Delay hack part 1

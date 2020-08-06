@@ -101,35 +101,23 @@ resource "rancher2_node_pool" "nodepool_az" {
   depends_on = [rancher2_cluster_template.template_az]
 }
 
-# Delay hack part 1
-resource "null_resource" "before" {
-  depends_on = [rancher2_cluster.cluster_az]
-}
-
-# Delay hack part 2
-resource "null_resource" "delay" {
-  provisioner "local-exec" {
-    command = "sleep ${var.delaysec}"
-  }
-
-  triggers = {
-    "before" = "${null_resource.before.id}"
-  }
+# Cluster Sync
+resource "rancher2_cluster_sync" "sync_az" {
+  cluster_id =  rancher2_cluster.cluster_az.id
+  node_pool_ids = [rancher2_node_pool.nodepool_az.id]
 }
 
 # Kubeconfig file
 resource "local_file" "kubeconfig" {
   filename = "${path.module}/.kube/config"
-  content = rancher2_cluster.cluster_az.kube_config
+  content = rancher2_cluster_sync.sync_az.kube_config
   file_permission = "0600"
-
-  depends_on = [null_resource.delay]
 }
 
 # Cluster logging
 resource "rancher2_cluster_logging" "az_syslog" {
   name = "az_syslog"
-  cluster_id = rancher2_cluster.cluster_az.id
+  cluster_id = rancher2_cluster_sync.sync_az.id
   kind = "syslog"
   syslog_config {
     endpoint = "rancher.chfrank.net:514"
@@ -138,7 +126,5 @@ resource "rancher2_cluster_logging" "az_syslog" {
     severity = "notice"
     ssl_verify = false
   }
-
-  depends_on = [local_file.kubeconfig]
 }
 

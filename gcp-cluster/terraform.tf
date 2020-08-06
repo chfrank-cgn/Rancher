@@ -2,7 +2,7 @@
 
 terraform {
   backend "remote" {
-    organization = "chfrank-cgn"
+    organization = "xxxxxxxxxxx"
 
     workspaces {
       name = "compute-prod-us-central"

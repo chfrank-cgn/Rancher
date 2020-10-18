@@ -9,15 +9,31 @@ terraform {
     }
   }
 
-  required_version = ">= 0.12"
-
   required_providers {
-    google = "~> 3.28"
-    local = "~> 1.4"
-    null = "~> 2.1"
-    rancher2 = "~> 1.9"
-    random = "~> 2.2"
-    template = "~> 2.1"
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 3.43"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
+    rancher2 = {
+      source  = "rancher/rancher2"
+      version = "~> 1.10"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2.2"
+    }
   }
 }
 

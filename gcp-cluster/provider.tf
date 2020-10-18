@@ -3,7 +3,7 @@
 # Google compute
 provider "google" {
   project     = "xxxxxxx-xxxxxx-xxxxxx"
-  credentials = file("xxxxxxxxxxxx.json")
+  credentials = file("xxxxxxxxxx.json")
   region      = "us-central1"
   zone        = "us-central1-c"
 }

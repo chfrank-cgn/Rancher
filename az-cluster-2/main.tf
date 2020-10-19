@@ -114,7 +114,7 @@ resource "null_resource" "delay" {
   }
 
   triggers = {
-    "before" = "${null_resource.before.id}"
+    "before" = "null_resource.before.id"
   }
 }
 

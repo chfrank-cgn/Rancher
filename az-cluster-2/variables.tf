@@ -7,7 +7,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.15.10-rancher1-1"
+	default = "v1.17.13-rancher1-1"
 }
 
 # Number of nodes
@@ -37,7 +37,7 @@ variable "az-region" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 720
+	default = 780
 }
 
 variable "rancher-url" { }

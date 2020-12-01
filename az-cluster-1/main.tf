@@ -32,6 +32,7 @@ resource "rancher2_node_template" "template_az" {
     size = var.type
     use_private_ip = false
   }
+
   depends_on = [rancher2_cloud_credential.credential_az]
 }
 
@@ -76,6 +77,7 @@ resource "rancher2_cluster_template" "template_az" {
       }
     }
   }
+
   depends_on = [rancher2_node_template.template_az]
 }
 
@@ -85,6 +87,7 @@ resource "rancher2_cluster" "cluster_az" {
   description  = "Terraform"
   cluster_template_id = rancher2_cluster_template.template_az.id
   cluster_template_revision_id = rancher2_cluster_template.template_az.default_revision_id
+
   depends_on = [rancher2_cluster_template.template_az]
 }
 
@@ -98,33 +101,78 @@ resource "rancher2_node_pool" "nodepool_az" {
   control_plane = true
   etcd = true
   worker = true
+
   depends_on = [rancher2_cluster_template.template_az]
 }
 
-# Cluster Sync
-resource "rancher2_cluster_sync" "sync_az" {
-  cluster_id =  rancher2_cluster.cluster_az.id
-  node_pool_ids = [rancher2_node_pool.nodepool_az.id]
+# Delay hack part 1
+resource "null_resource" "before" {
+  depends_on = [rancher2_cluster.cluster_az,rancher2_node_pool.nodepool_az]
+}
+
+# Delay hack part 2
+resource "null_resource" "delay" {
+  provisioner "local-exec" {
+    command = "sleep ${var.delaysec}"
+  }
+
+  triggers = {
+    "before" = "null_resource.before.id"
+  }
 }
 
 # Kubeconfig file
 resource "local_file" "kubeconfig" {
   filename = "${path.module}/.kube/config"
-  content = rancher2_cluster_sync.sync_az.kube_config
+  content = rancher2_cluster.cluster_az.kube_config
   file_permission = "0600"
+
+  depends_on = [null_resource.delay]
+}
+
+# Cluster monitoring
+resource "rancher2_app_v2" "monitor_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-monitoring"
+  namespace = "cattle-monitoring-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-monitoring"
+  chart_version = var.monchart
+  values = templatefile("${path.module}/files/values.yaml", {})
+
+  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_az,rancher2_node_pool.nodepool_az]
+}
+
+# Cluster logging CRD
+resource "rancher2_app_v2" "syslog_crd_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-logging-crd"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging-crd"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster.cluster_az,rancher2_node_pool.nodepool_az]
 }
 
 # Cluster logging
-resource "rancher2_cluster_logging" "az_syslog" {
-  name = "az_syslog"
-  cluster_id = rancher2_cluster_sync.sync_az.id
-  kind = "syslog"
-  syslog_config {
-    endpoint = "rancher.chfrank.net:514"
-    protocol = "udp"
-    program = "az-${random_id.instance_id.hex}"
-    severity = "notice"
-    ssl_verify = false
+resource "rancher2_app_v2" "syslog_az" {
+  lifecycle {
+    ignore_changes = all
   }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-logging"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster.cluster_az,rancher2_node_pool.nodepool_az]
 }
 

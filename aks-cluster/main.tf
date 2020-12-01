@@ -60,19 +60,3 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster logging
-resource "rancher2_cluster_logging" "az_syslog" {
-  name = "az_syslog"
-  cluster_id = rancher2_cluster.cluster_az.id
-  kind = "syslog"
-  syslog_config {
-    endpoint = "rancher.chfrank.net:514"
-    protocol = "udp"
-    program = "aks-${random_id.instance_id.hex}"
-    severity = "notice"
-    ssl_verify = false
-  }
-
-  depends_on = [local_file.kubeconfig]
-}
-

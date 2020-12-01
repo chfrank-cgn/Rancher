@@ -7,7 +7,7 @@ variable "image" {
 
 # Node disk size in GB
 variable "disksize" {
-	default = 30
+	default = 50
 }
 
 # Node type
@@ -17,17 +17,27 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.17.13-rancher1-1"
+	default = "v1.18.12-rancher1-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/18.06.sh"
+	default = "https://releases.rancher.com/install-docker/19.03.sh"
 }
 
 # Number of nodes
 variable "numnodes" {
 	default = 3
+}
+
+# Monitoring chart
+variable "monchart" {
+	default = "9.4.201"
+}
+
+# Logging chart
+variable "logchart" {
+	default = "3.6.001"
 }
 
 # Azure open ports
@@ -53,7 +63,7 @@ variable "az-storage-type" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 1020
+	default = 1140
 }
 
 variable "rancher-url" { }

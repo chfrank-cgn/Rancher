@@ -127,19 +127,49 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster logging
-resource "rancher2_cluster_logging" "az_syslog" {
-  name = "az_syslog"
-  cluster_id = rancher2_cluster.cluster_az.id
-  kind = "syslog"
-  syslog_config {
-    endpoint = "rancher.chfrank.net:514"
-    protocol = "udp"
-    program = "az-${random_id.instance_id.hex}"
-    severity = "notice"
-    ssl_verify = false
+# Cluster monitoring
+resource "rancher2_app_v2" "monitor_az" {
+  lifecycle {
+    ignore_changes = all
   }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-monitoring"
+  namespace = "cattle-monitoring-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-monitoring"
+  chart_version = var.monchart
+  values = templatefile("${path.module}/files/values.yaml", {})
 
-  depends_on = [local_file.kubeconfig]
+  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+}
+
+# Cluster logging CRD
+resource "rancher2_app_v2" "syslog_crd_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-logging-crd"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging-crd"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+}
+
+# Cluster logging
+resource "rancher2_app_v2" "syslog_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-logging"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 

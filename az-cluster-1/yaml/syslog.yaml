@@ -14,7 +14,7 @@ stringData:
         Name              syslog
         InstanceName      syslog-output
         Match             *
-        Addr              rancher.chfrank.net:514
+        Addr              your.syslog.host:514
         Cluster           true
         SanitizeHost      true
 

@@ -85,19 +85,49 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster logging
-resource "rancher2_cluster_logging" "gcp_syslog" {
-  name = "gcp_syslog"
-  cluster_id = rancher2_cluster.cluster_gcp.id
-  kind = "syslog"
-  syslog_config {
-    endpoint = "rancher:514"
-    protocol = "udp"
-    program = "gcp-${random_id.instance_id.hex}"
-    severity = "notice"
-    ssl_verify = false
+# Cluster monitoring
+resource "rancher2_app_v2" "monitor_gcp" {
+  lifecycle {
+    ignore_changes = all
   }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "rancher-monitoring"
+  namespace = "cattle-monitoring-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-monitoring"
+  chart_version = var.monchart
+  values = templatefile("${path.module}/files/values.yaml", {})
 
-  depends_on = [local_file.kubeconfig]
+  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+}
+
+# Cluster logging CRD
+resource "rancher2_app_v2" "syslog_crd_gcp" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "rancher-logging-crd"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging-crd"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.monitor_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+}
+
+# Cluster logging
+resource "rancher2_app_v2" "syslog_gcp" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "rancher-logging"
+  namespace = "cattle-logging-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-logging"
+  chart_version = var.logchart
+
+  depends_on = [rancher2_app_v2.syslog_crd_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 

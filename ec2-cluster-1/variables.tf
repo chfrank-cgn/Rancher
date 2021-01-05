@@ -67,7 +67,7 @@ variable "ec2-secgroup" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 840
+	default = 720
 }
 
 variable "rancher-url" { }

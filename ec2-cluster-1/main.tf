@@ -28,6 +28,8 @@ resource "rancher2_node_template" "template_ec2" {
     zone = var.ec2-zone
     root_size = var.disksize
     instance_type = var.type
+    iam_instance_profile = "rancher-combined-control-worker"
+    tags = "kubernetes.io/cluster/rancher,owned"
   }
 
   depends_on = [rancher2_cloud_credential.credential_ec2]
@@ -40,6 +42,14 @@ resource "rancher2_cluster" "cluster_ec2" {
 
   rke_config {
     kubernetes_version = var.k8version
+    cloud_provider {
+      name = "aws"
+      aws_cloud_provider {
+        global {
+          kubernetes_cluster_tag = "rancher"
+        }
+      }
+    }
     ignore_docker_version = false
     network {
       plugin = "flannel"

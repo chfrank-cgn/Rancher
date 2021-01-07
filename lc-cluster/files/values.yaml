@@ -1,0 +1,4 @@
+prometheus:
+  prometheusSpec:
+    retention: 1d
+

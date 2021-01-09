@@ -3,7 +3,7 @@
 # NFS storage class
 resource "helm_release" "nfs_client" {
   name = "nfs-client"
-  chart = "stable/nfs-client-provisioner"
+  chart = "ckotzbauer/nfs-client-provisioner"
   namespace = "kube-public"
 
   set { 

@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.18.12-rancher1-1"
+	default = "v1.18.14-rancher1-1"
 }
 
 # Number of nodes

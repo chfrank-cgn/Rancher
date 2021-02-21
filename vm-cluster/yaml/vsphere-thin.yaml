@@ -1,0 +1,13 @@
+# Create the default storageclass that uses the vsphere-volume provider
+ 
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: thin
+provisioner: kubernetes.io/vsphere-volume
+parameters:
+  diskformat: thin
+reclaimPolicy: Delete
+

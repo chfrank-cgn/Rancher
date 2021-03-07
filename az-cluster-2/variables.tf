@@ -7,7 +7,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.18.12-rancher1-1"
+	default = "v1.20.4-rancher1-1"
 }
 
 # Number of nodes
@@ -17,12 +17,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.201"
+	default = "9.4.203"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.6.001"
+	default = "3.9.000"
 }
 
 # Azure Resource Group

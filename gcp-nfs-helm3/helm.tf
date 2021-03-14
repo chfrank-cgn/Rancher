@@ -3,7 +3,8 @@
 # NFS storage class
 resource "helm_release" "nfs_client" {
   name = "nfs-client"
-  chart = "ckotzbauer/nfs-client-provisioner"
+  repository = "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/"
+  chart = "nfs-subdir-external-provisioner"
   namespace = "kube-public"
 
   set { 

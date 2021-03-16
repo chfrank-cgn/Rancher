@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.19.7-rancher1-1"
+	default = "v1.19.8-rancher1-1"
 }
 
 # Docker version
@@ -32,12 +32,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.202"
+	default = "9.4.203"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.8.201"
+	default = "3.9.000"
 }
 
 # EC2 Region

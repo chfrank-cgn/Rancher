@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.19.8-rancher1-1"
+	default = "v1.20.5-rancher1-1"
 }
 
 # Docker version
@@ -77,4 +77,8 @@ variable "rancher-token" { }
 variable "ec2-access-key" { }
 
 variable "ec2-secret-key" { }
+
+variable "prom-remote-user" { }
+
+variable "prom-remote-pass" { }
 

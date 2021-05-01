@@ -110,22 +110,6 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster monitoring
-resource "rancher2_app_v2" "monitor_ec2" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_ec2.id
-  name = "rancher-monitoring"
-  namespace = "cattle-monitoring-system"
-  repo_name = "rancher-charts"
-  chart_name = "rancher-monitoring"
-  chart_version = var.monchart
-  values = templatefile("${path.module}/files/values.yaml", {})
-
-  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
-}
-
 # Cluster logging CRD
 resource "rancher2_app_v2" "syslog_crd_ec2" {
   lifecycle {
@@ -138,7 +122,7 @@ resource "rancher2_app_v2" "syslog_crd_ec2" {
   chart_name = "rancher-logging-crd"
   chart_version = var.logchart
 
-  depends_on = [rancher2_app_v2.monitor_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Cluster logging
@@ -154,5 +138,54 @@ resource "rancher2_app_v2" "syslog_ec2" {
   chart_version = var.logchart
 
   depends_on = [rancher2_app_v2.syslog_crd_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
+# Monitoring namespace
+resource "kubernetes_namespace" "promns_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  metadata {
+    annotations = {
+      name = "Terraform"
+    }
+    name = "cattle-monitoring-system"
+  }
+
+  depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
+# Prometheus secret
+resource "kubernetes_secret" "promsecret_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  metadata {
+    name = "remote-writer"
+    namespace = "cattle-monitoring-system"
+  }
+  data = {
+    username = var.prom-remote-user
+    password = var.prom-remote-pass
+  }
+  type = "kubernetes.io/basic-auth"
+
+  depends_on = [kubernetes_namespace.promns_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
+# Cluster monitoring
+resource "rancher2_app_v2" "monitor_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "rancher-monitoring"
+  namespace = "cattle-monitoring-system"
+  repo_name = "rancher-charts"
+  chart_name = "rancher-monitoring"
+  chart_version = var.monchart
+  values = templatefile("${path.module}/files/values.yaml", {})
+
+  depends_on = [kubernetes_secret.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 

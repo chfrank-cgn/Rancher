@@ -7,8 +7,3 @@ provider "rancher2" {
   insecure = true
 }
 
-# Kubernetes
-provider "kubernetes" {
-  config_path = "${path.module}/.kube/config"
-}
-

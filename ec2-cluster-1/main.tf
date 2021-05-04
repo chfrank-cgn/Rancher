@@ -141,36 +141,32 @@ resource "rancher2_app_v2" "syslog_ec2" {
 }
 
 # Monitoring namespace
-resource "kubernetes_namespace" "promns_ec2" {
+resource "rancher2_namespace" "promns_ec2" {
   lifecycle {
     ignore_changes = all
   }
-  metadata {
-    annotations = {
-      name = "Terraform"
-    }
-    name = "cattle-monitoring-system"
-  }
+  name = "cattle-monitoring-system"
+  project_id = data.rancher2_project.system.id
+  description = "Terraform"
 
   depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Prometheus secret
-resource "kubernetes_secret" "promsecret_ec2" {
+resource "rancher2_secret_v2" "promsecret_ec2" {
   lifecycle {
     ignore_changes = all
   }
-  metadata {
-    name = "remote-writer"
-    namespace = "cattle-monitoring-system"
-  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "remote-writer"
+  namespace = "cattle-monitoring-system"
+  type = "kubernetes.io/basic-auth"
   data = {
     username = var.prom-remote-user
     password = var.prom-remote-pass
   }
-  type = "kubernetes.io/basic-auth"
 
-  depends_on = [kubernetes_namespace.promns_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_namespace.promns_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Cluster monitoring
@@ -186,6 +182,6 @@ resource "rancher2_app_v2" "monitor_ec2" {
   chart_version = var.monchart
   values = templatefile("${path.module}/files/values.yaml", {})
 
-  depends_on = [kubernetes_secret.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 

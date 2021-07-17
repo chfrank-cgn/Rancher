@@ -12,12 +12,12 @@ variable "disksize" {
 
 # Node type
 variable "type" {
-	default = "e2-standard-2"
+	default = "e2-standard-4"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.18.16-rancher1-1"
+	default = "v1.19.12-rancher1-1"
 }
 
 # Number of nodes
@@ -27,12 +27,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.203"
+	default = "14.5.100"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.9.000"
+	default = "3.9.400"
 }
 
 # Hack: Time to wait for Kubernetes to deploy

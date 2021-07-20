@@ -6,6 +6,7 @@ metadata:
 spec:
   globalOutputRefs:
     - syslog
+    - loki
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
 kind: ClusterOutput
@@ -20,4 +21,25 @@ spec:
     host: rancher
     port: 514
     transport: tcp
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: loki
+  namespace: cattle-logging-system
+spec:
+  loki:
+    configure_kubernetes_labels: true
+    password:
+      valueFrom:
+        secretKeyRef:
+          key: Pass
+          name: grafana
+    tenant: grafanacloud-xxxxxxxxxx-logs
+    url: https://logs-prod-us-central1.grafana.net
+    username:
+      valueFrom:
+        secretKeyRef:
+          key: User
+          name: grafana
 

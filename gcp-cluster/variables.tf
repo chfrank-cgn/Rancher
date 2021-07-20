@@ -44,3 +44,7 @@ variable "rancher-url" { }
 
 variable "rancher-token" { }
 
+variable "prom-remote-user" { }
+
+variable "prom-remote-pass" { }
+

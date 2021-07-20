@@ -1,4 +1,13 @@
 prometheus:
   prometheusSpec:
+    remoteWrite:
+    - url: https://prometheus-us-central1.grafana.net/api/prom/push
+      basicAuth:
+        username: 
+          name: remote-writer
+          key: username
+        password: 
+          name: remote-writer
+          key: password
     retention: 1d
 

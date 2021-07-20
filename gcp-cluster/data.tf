@@ -9,3 +9,11 @@ data "template_file" "startup-script_data" {
   depends_on = [rancher2_cluster.cluster_gcp]
 }
 
+# Data sources
+
+# System project
+data "rancher2_project" "system" {
+    cluster_id = rancher2_cluster.cluster_gcp.id
+    name = "System"
+}
+

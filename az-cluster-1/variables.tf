@@ -7,22 +7,22 @@ variable "image" {
 
 # Node disk size in GB
 variable "disksize" {
-	default = 50
+	default = 64
 }
 
 # Node type
 variable "type" {
-	default = "Standard_D2s_v3"
+	default = "Standard_D4s_v3"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.20.5-rancher1-1"
+	default = "v1.21.4-rancher1-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/19.03.sh"
+	default = "https://releases.rancher.com/install-docker/20.10.sh"
 }
 
 # Number of nodes
@@ -32,12 +32,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.203"
+	default = "100.0.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.9.000"
+	default = "100.0.0"
 }
 
 # Azure open ports

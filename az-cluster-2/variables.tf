@@ -2,12 +2,12 @@
 
 # Node type
 variable "type" {
-	default = "Standard_D2s_v3"
+	default = "Standard_D4s_v3"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.20.4-rancher1-1"
+	default = "v1.21.4-rancher1-1"
 }
 
 # Number of nodes
@@ -17,12 +17,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.203"
+	default = "100.0.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.9.000"
+	default = "100.0.0"
 }
 
 # Azure Resource Group
@@ -47,7 +47,7 @@ variable "az-region" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 840
+	default = 1140
 }
 
 variable "rancher-url" { }

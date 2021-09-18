@@ -17,9 +17,10 @@ spec:
   syslog:
     buffer: {}
     format:
-      type: json
+      type: out_file
     host: rancher.chfrank.net
     port: 514
+    insecuure: yes
     transport: tcp
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
@@ -35,7 +36,7 @@ spec:
         secretKeyRef:
           key: Pass
           name: grafana
-    tenant: grafanacloud-chfrankcgn-logs
+    tenant: grafanacloud-xxxxxxxxxx-logs
     url: https://logs-prod-us-central1.grafana.net
     username:
       valueFrom:

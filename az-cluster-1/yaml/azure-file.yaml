@@ -13,6 +13,6 @@ mountOptions:
   - cache=strict
 parameters:
   skuName: Standard_LRS
-  location: westeurope
+  location: eastus
   resourceGroup: az-cluster-1
 

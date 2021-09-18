@@ -17,9 +17,10 @@ spec:
   syslog:
     buffer: {}
     format:
-      type: json
+      type: out_file
     host: rancher
     port: 514
+    insecure: yes
     transport: tcp
 ---
 apiVersion: logging.banzaicloud.io/v1beta1

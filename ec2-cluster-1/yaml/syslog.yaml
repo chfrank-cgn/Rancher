@@ -15,12 +15,16 @@ metadata:
   namespace: cattle-logging-system
 spec:
   syslog:
-    buffer: {}
+    buffer:
+      timekey: 30s
+      timekey_use_utc: true
+      timekey_wait: 10s
+      flush_interval: 5s
     format:
       type: out_file
     host: rancher.chfrank.net
+    insecure: true
     port: 514
-    insecuure: yes
     transport: tcp
 ---
 apiVersion: logging.banzaicloud.io/v1beta1

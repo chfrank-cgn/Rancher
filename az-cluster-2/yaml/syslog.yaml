@@ -6,7 +6,6 @@ metadata:
 spec:
   globalOutputRefs:
     - syslog
-    - loki
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
 kind: ClusterOutput
@@ -15,32 +14,15 @@ metadata:
   namespace: cattle-logging-system
 spec:
   syslog:
-    buffer: {}
+    buffer:
+      timekey: 30s
+      timekey_use_utc: true
+      timekey_wait: 10s
+      flush_interval: 5s
     format:
       type: out_file
     host: rancher.chfrank.net
+    insecure: true
     port: 514
-    insecure: yes
     transport: tcp
----
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: ClusterOutput
-metadata:
-  name: loki
-  namespace: cattle-logging-system
-spec:
-  loki:
-    configure_kubernetes_labels: true
-    password:
-      valueFrom:
-        secretKeyRef:
-          key: Pass
-          name: grafana
-    tenant: grafanacloud-xxxxxxxxxx-logs
-    url: https://logs-prod-us-central1.grafana.net
-    username:
-      valueFrom:
-        secretKeyRef:
-          key: User
-          name: grafana
 

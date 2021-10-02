@@ -17,12 +17,12 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.20.5-rancher1-1"
+	default = "v1.21.5-rancher1-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/19.03.sh"
+	default = "https://releases.rancher.com/install-docker/20.10.sh"
 }
 
 # Number of nodes
@@ -32,12 +32,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "9.4.203"
+	default = "100.0.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.9.000"
+	default = "100.0.0"
 }
 
 # EC2 Region
@@ -67,7 +67,7 @@ variable "ec2-secgroup" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 720
+	default = 960
 }
 
 variable "rancher-url" { }

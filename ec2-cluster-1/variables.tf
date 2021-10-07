@@ -12,7 +12,7 @@ variable "disksize" {
 
 # Node type
 variable "type" {
-	default = "m3.large"
+	default = "m3.xlarge"
 }
 
 # Kubernetes version
@@ -22,7 +22,7 @@ variable "k8version" {
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/20.10.sh"
+	default = "https://releases.rancher.com/install-docker/19.03.sh"
 }
 
 # Number of nodes

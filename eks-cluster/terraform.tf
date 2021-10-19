@@ -5,7 +5,7 @@ terraform {
     organization = "xxxxxxxxxxx"
 
     workspaces {
-      name = "compute-test-eu-central"
+      name = "compute-prod-eu-central"
     }
   }
 
@@ -13,10 +13,6 @@ terraform {
     local = {
       source  = "hashicorp/local"
       version = "~> 2.1"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.1"
     }
     rancher2 = {
       source  = "rancher/rancher2"

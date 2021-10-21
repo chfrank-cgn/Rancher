@@ -17,7 +17,7 @@ variable "k8version" {
 
 # Number of nodes
 variable "numnodes" {
-	default = 3
+	default = 2
 }
 
 # EC2 Region

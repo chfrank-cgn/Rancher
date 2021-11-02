@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.19.12-rancher1-1"
+	default = "v1.19.15-rancher1-2"
 }
 
 # Number of nodes
@@ -27,12 +27,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "14.5.100"
+	default = "100.0.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "3.9.400"
+	default = "100.0.0"
 }
 
 # Hack: Time to wait for Kubernetes to deploy

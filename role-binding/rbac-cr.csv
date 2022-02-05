@@ -1,0 +1,5 @@
+id,user,role
+cr01,user1,nodes-view
+cr02,user2,cluster-owner
+cr03,user3,nodes-view
+cr04,user4,cluster-member

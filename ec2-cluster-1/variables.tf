@@ -7,7 +7,7 @@ variable "image" {
 
 # Node disk size in GB
 variable "disksize" {
-	default = 32
+	default = 64
 }
 
 # Node type
@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.21.6-rancher1-2"
+	default = "v1.21.9-rancher1-1"
 }
 
 # Docker version

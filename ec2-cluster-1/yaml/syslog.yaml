@@ -24,7 +24,7 @@ spec:
       type: out_file
     host: rancher.chfrank.net
     insecure: true
-    port: 514
+    port: 601
     transport: tcp
 ---
 apiVersion: logging.banzaicloud.io/v1beta1

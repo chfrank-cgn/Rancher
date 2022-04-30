@@ -7,7 +7,7 @@ variable "image" {
 
 # Node disk size in GB
 variable "disksize" {
-	default = 64
+	default = 128
 }
 
 # Node type
@@ -32,12 +32,22 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "100.0.0"
+	default = "100.1.2"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "100.0.0"
+	default = "100.1.1"
+}
+
+# Bitnami URL
+variable "bitnami-url" {
+        default = "https://charts.bitnami.com/bitnami"
+}
+
+# Prometheus URL
+variable "prom-url" {
+        default = "https://prometheus-community.github.io/helm-charts"
 }
 
 # EC2 Region

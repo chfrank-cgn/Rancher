@@ -160,3 +160,27 @@ resource "rancher2_app_v2" "monitor_gcp" {
   depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 
+# Bitnami Catalog
+resource "rancher2_catalog_v2" "bitnami" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "bitnami"
+  url = var.bitnami-url
+
+  depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+}
+
+# Prometheus Catalog
+resource "rancher2_catalog_v2" "prometheus" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "prometheus"
+  url = var.prom-url
+
+  depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+}
+

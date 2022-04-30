@@ -18,7 +18,7 @@ spec:
     format:
       type: out_file
     host: rancher
-    port: 514
+    port: 601
     insecure: yes
     transport: tcp
 

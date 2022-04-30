@@ -7,17 +7,17 @@ variable "disksize" {
 
 # Node type
 variable "type" {
-	default = "Standard_D2s_v3"
+	default = "Standard_D4s_v3"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.17.11"
+	default = "1.21.9"
 }
 
 # Number of nodes
 variable "numnodes" {
-	default = 3
+	default = 1
 }
 
 # Azure Resource Group

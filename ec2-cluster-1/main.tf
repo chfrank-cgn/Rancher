@@ -185,3 +185,27 @@ resource "rancher2_app_v2" "monitor_ec2" {
   depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
+# Bitnami Catalog
+resource "rancher2_catalog_v2" "bitnami" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "bitnami"
+  url = var.bitnami-url
+
+  depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
+# Prometheus Catalog
+resource "rancher2_catalog_v2" "prometheus" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "prometheus"
+  url = var.prom-url
+
+  depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+

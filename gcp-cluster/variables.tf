@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.19.16-rancher1-2"
+	default = "v1.19.16-rancher1-3"
 }
 
 # Number of nodes
@@ -33,6 +33,16 @@ variable "monchart" {
 # Logging chart
 variable "logchart" {
 	default = "100.0.1"
+}
+
+# Bitnami URL
+variable "bitnami-url" {
+	default = "https://charts.bitnami.com/bitnami"
+}
+
+# Prometheus URL
+variable "prom-url" {
+	default = "https://prometheus-community.github.io/helm-charts"
 }
 
 # Hack: Time to wait for Kubernetes to deploy

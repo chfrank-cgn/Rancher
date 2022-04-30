@@ -20,7 +20,7 @@ terraform {
     }
     rancher2 = {
       source  = "rancher/rancher2"
-      version = "~> 1.22"
+      version = "~> 1.23"
     }
     random = {
       source  = "hashicorp/random"

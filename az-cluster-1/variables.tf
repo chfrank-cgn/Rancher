@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.21.5-rancher1-1"
+	default = "v1.21.10-rancher1-1"
 }
 
 # Docker version
@@ -32,12 +32,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "100.0.0"
+	default = "100.1.2"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "100.0.0"
+	default = "100.1.1"
 }
 
 # Azure open ports

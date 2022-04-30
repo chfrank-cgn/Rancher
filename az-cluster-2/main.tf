@@ -13,6 +13,7 @@ resource "rancher2_cluster" "cluster_az" {
   rke_config {
     kubernetes_version = var.k8version
     ignore_docker_version = false
+    enable_cri_dockerd = true
     cloud_provider {
       name = "azure"
       azure_cloud_provider {
@@ -88,8 +89,8 @@ resource "azurerm_linux_virtual_machine" "vm_az" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer = "UbuntuServer"
-    sku = "18.04-LTS"
+    offer = "0001-com-ubuntu-server-focal"
+    sku = "20_04-lts"
     version = "latest"
   }
 

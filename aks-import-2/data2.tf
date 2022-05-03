@@ -1,8 +1,13 @@
 # Data sources
 
-# Manifest
-data "kubectl_path_documents" "import_manifest" {
-    pattern = "/tmp/aks-${random_id.instance_id.hex}.yaml"
-    depends_on = [null_resource.manifest]
+# Rancher settings
+data "rancher2_setting" "server_version" {
+    name = "server-version"
+}
+data "rancher2_setting" "install_uuid" {
+    name = "install-uuid"
+}
+data "rancher2_setting" "server_url" {
+    name = "server-url"
 }
 

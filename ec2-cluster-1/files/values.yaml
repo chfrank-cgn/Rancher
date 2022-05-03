@@ -1,15 +1,3 @@
-prometheus:
-  prometheusSpec:
-    remoteWrite:
-    - url: https://prometheus-us-central1.grafana.net/api/prom/push
-      basicAuth:
-        username: 
-          name: remote-writer
-          key: username
-        password: 
-          name: remote-writer
-          key: password
-    retention: 1d
 alertmanager:
   config:
     receivers:
@@ -17,7 +5,7 @@ alertmanager:
         slack_configs:
           - send_resolved: true
             api_url: >-
-              https://hooks.slack.com/services/xxx/xxx
+              https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxx
             channel: '#ec2-cluster-1'
       - name: 'null'
     route:
@@ -35,4 +23,28 @@ alertmanager:
         match_re:
           alertname: '.*'
         receiver: slack-receiver
+grafana:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - meetup2020.ddns.net
+kubeApiServer:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    remoteWrite:
+    - url: https://prometheus-us-central1.grafana.net/api/prom/push
+      basicAuth:
+        username: 
+          name: remote-writer
+          key: username
+        password: 
+          name: remote-writer
+          key: password
+    retention: 1d
+    scrapeInterval: 1m
+  serviceMonitor:
+    selfMonitor: false
 

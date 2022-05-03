@@ -136,6 +136,7 @@ resource "rancher2_app_v2" "syslog_ec2" {
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
+  values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_crd_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }

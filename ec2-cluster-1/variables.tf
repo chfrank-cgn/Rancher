@@ -2,7 +2,7 @@
 
 # Node image
 variable "image" { 
-	default = "ami-024e928dca73bfe66"
+	default = "ami-02584c1c9d05efa69"
 }
 
 # Node disk size in GB
@@ -12,17 +12,17 @@ variable "disksize" {
 
 # Node type
 variable "type" {
-	default = "m3.xlarge"
+	default = "m5a.xlarge"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.21.9-rancher1-1"
+	default = "v1.22.9-rancher1-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/19.03.sh"
+	default = "https://releases.rancher.com/install-docker/20.10.sh"
 }
 
 # Number of nodes

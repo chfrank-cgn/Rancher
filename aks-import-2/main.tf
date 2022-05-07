@@ -333,7 +333,7 @@ resource "kubernetes_service" "cattle_cluster_agent" {
     }
   }
 
-  depends_on = [kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [kubernetes_namespace.cattle_system]
 }
 
 # Delay hack part 1

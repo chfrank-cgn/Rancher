@@ -30,8 +30,15 @@ resource "kubernetes_cluster_role_binding" "import_role_binding" {
   depends_on = [rancher2_cluster.cluster_az]
 }
 
+#
+# === Begin Manifest
+#
+
 # Cluster role
 resource "kubernetes_cluster_role" "proxy_clusterrole_kubeapiserver" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "proxy-clusterrole-kubeapiserver"
   }
@@ -46,6 +53,9 @@ resource "kubernetes_cluster_role" "proxy_clusterrole_kubeapiserver" {
 
 # Cluster role binding
 resource "kubernetes_cluster_role_binding" "proxy_role_binding_kubernetes_master" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "proxy-role-binding-kubernetes-master"
   }
@@ -64,6 +74,9 @@ resource "kubernetes_cluster_role_binding" "proxy_role_binding_kubernetes_master
 
 # Namespace
 resource "kubernetes_namespace" "cattle_system" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "cattle-system"
   }
@@ -73,6 +86,9 @@ resource "kubernetes_namespace" "cattle_system" {
 
 # Service account
 resource "kubernetes_service_account" "cattle" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name      = "cattle"
     namespace = "cattle-system"
@@ -83,6 +99,9 @@ resource "kubernetes_service_account" "cattle" {
 
 # Cluster role binding
 resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "cattle-admin-binding"
     labels = {
@@ -105,6 +124,9 @@ resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
 
 # Registration Secret
 resource "kubernetes_secret" "cattle_credentials_az" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name      = "cattle-credentials-${random_id.instance_id.hex}"
     namespace = "cattle-system"
@@ -120,6 +142,9 @@ resource "kubernetes_secret" "cattle_credentials_az" {
 
 # Cluster role
 resource "kubernetes_cluster_role" "cattle_admin" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "cattle-admin"
     labels = {
@@ -141,6 +166,9 @@ resource "kubernetes_cluster_role" "cattle_admin" {
 
 # Deployment
 resource "kubernetes_deployment" "cattle_cluster_agent" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name      = "cattle-cluster-agent"
     namespace = "cattle-system"
@@ -311,6 +339,9 @@ resource "kubernetes_deployment" "cattle_cluster_agent" {
 
 # Service definition
 resource "kubernetes_service" "cattle_cluster_agent" {
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name      = "cattle-cluster-agent"
     namespace = "cattle-system"
@@ -335,6 +366,10 @@ resource "kubernetes_service" "cattle_cluster_agent" {
 
   depends_on = [kubernetes_namespace.cattle_system]
 }
+
+#
+# === End Manifest
+#
 
 # Delay hack part 1
 resource "null_resource" "before" {

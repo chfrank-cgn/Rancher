@@ -29,7 +29,7 @@ grafana:
     annotations:
       kubernetes.io/ingress.class: nginx
     hosts:
-    - meetup2020.ddns.net
+    - grafanacgn.ddns.net
 kubeApiServer:
   enabled: false
 prometheus:
@@ -43,6 +43,8 @@ prometheus:
         password: 
           name: remote-writer
           key: password
+    replicaExternalLabelName: "__replica__"
+    externalLabels: {cluster: "${cluster_name}"}
     retention: 1d
     scrapeInterval: 1m
   serviceMonitor:

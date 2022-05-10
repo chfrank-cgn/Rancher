@@ -118,6 +118,7 @@ resource "rancher2_app_v2" "syslog_crd_ec2" {
   cluster_id = rancher2_cluster.cluster_ec2.id
   name = "rancher-logging-crd"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging-crd"
   chart_version = var.logchart
@@ -133,12 +134,29 @@ resource "rancher2_app_v2" "syslog_ec2" {
   cluster_id = rancher2_cluster.cluster_ec2.id
   name = "rancher-logging"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_crd_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
+# Longhorn
+resource "rancher2_app_v2" "longhorn_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "longhorn"
+  namespace = "longhorn-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "longhorn"
+  chart_version = var.longchart
+
+  depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Monitoring namespace
@@ -150,7 +168,7 @@ resource "rancher2_namespace" "promns_ec2" {
   project_id = data.rancher2_project.system.id
   description = "Terraform"
 
-  depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_app_v2.longhorn_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Prometheus secret
@@ -178,10 +196,11 @@ resource "rancher2_app_v2" "monitor_ec2" {
   cluster_id = rancher2_cluster.cluster_ec2.id
   name = "rancher-monitoring"
   namespace = "cattle-monitoring-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-monitoring"
   chart_version = var.monchart
-  values = templatefile("${path.module}/files/values.yaml", {})
+  values = data.template_file.values-yaml_data.rendered
 
   depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }

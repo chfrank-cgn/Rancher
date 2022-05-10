@@ -40,6 +40,11 @@ variable "logchart" {
 	default = "100.1.1"
 }
 
+# Longhorn chart
+variable "longchart" {
+	default = "100.1.2"
+}
+
 # Bitnami URL
 variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"

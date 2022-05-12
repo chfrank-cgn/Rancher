@@ -30,6 +30,8 @@ grafana:
       kubernetes.io/ingress.class: nginx
     hosts:
     - grafanacgn.ddns.net
+ingressNginx:
+  enabled: true
 kubeApiServer:
   enabled: false
 prometheus:

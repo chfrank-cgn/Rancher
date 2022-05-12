@@ -1,3 +1,5 @@
+ingressNginx:
+  enabled: true
 prometheus:
   prometheusSpec:
     retention: 1d

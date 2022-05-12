@@ -93,6 +93,7 @@ resource "rancher2_app_v2" "syslog_crd_gcp" {
   cluster_id = rancher2_cluster.cluster_gcp.id
   name = "rancher-logging-crd"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging-crd"
   chart_version = var.logchart
@@ -108,40 +109,13 @@ resource "rancher2_app_v2" "syslog_gcp" {
   cluster_id = rancher2_cluster.cluster_gcp.id
   name = "rancher-logging"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
+  values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_crd_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
-}
-
-# Monitoring namespace
-resource "rancher2_namespace" "promns_gcp" {
-  lifecycle {
-    ignore_changes = all
-  }
-  name = "cattle-monitoring-system"
-  project_id = data.rancher2_project.system.id
-  description = "Terraform"
-
-  depends_on = [rancher2_app_v2.syslog_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
-}
-
-# Prometheus secret
-resource "rancher2_secret_v2" "promsecret_gcp" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_gcp.id
-  name = "remote-writer"
-  namespace = "cattle-monitoring-system"
-  type = "kubernetes.io/basic-auth"
-  data = {
-    username = var.prom-remote-user
-    password = var.prom-remote-pass
-  }
-
-  depends_on = [rancher2_namespace.promns_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 
 # Cluster monitoring
@@ -152,12 +126,13 @@ resource "rancher2_app_v2" "monitor_gcp" {
   cluster_id = rancher2_cluster.cluster_gcp.id
   name = "rancher-monitoring"
   namespace = "cattle-monitoring-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-monitoring"
   chart_version = var.monchart
   values = templatefile("${path.module}/files/values.yaml", {})
 
-  depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+  depends_on = [rancher2_app_v2.syslog_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 
 # Bitnami Catalog
@@ -169,18 +144,6 @@ resource "rancher2_catalog_v2" "bitnami" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
-}
-
-# Prometheus Catalog
-resource "rancher2_catalog_v2" "prometheus" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_gcp.id
-  name = "prometheus"
-  url = var.prom-url
-
-  depends_on = [rancher2_secret_v2.promsecret_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+  depends_on = [rancher2_app_v2.monitor_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 

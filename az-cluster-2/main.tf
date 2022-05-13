@@ -13,7 +13,7 @@ resource "rancher2_cluster" "cluster_az" {
   rke_config {
     kubernetes_version = var.k8version
     ignore_docker_version = false
-    enable_cri_dockerd = true
+    enable_cri_dockerd = false
     cloud_provider {
       name = "azure"
       azure_cloud_provider {

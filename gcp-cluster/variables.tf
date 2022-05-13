@@ -7,12 +7,17 @@ variable "image" {
 
 # Node disk size in GB
 variable "disksize" {
-	default =128 
+	default = 128 
+}
+
+# Node disk type 
+variable "disktype" {
+	default = "pd-balanced"
 }
 
 # Node type
 variable "type" {
-	default = "e2-standard-4"
+	default = "n2-standard-4"
 }
 
 # Kubernetes version
@@ -33,6 +38,11 @@ variable "monchart" {
 # Logging chart
 variable "logchart" {
 	default = "100.1.1"
+}
+
+# Longhorn
+variable "longchart" {
+	default = "100.1.2"
 }
 
 # Bitnami URL

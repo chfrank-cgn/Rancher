@@ -41,6 +41,7 @@ resource "google_compute_instance" "vm_gcp" {
     initialize_params {
       image = var.image
       size = var.disksize
+      type = var.disktype
     }
   }
 
@@ -133,6 +134,22 @@ resource "rancher2_app_v2" "monitor_gcp" {
   values = templatefile("${path.module}/files/values.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+}
+
+# Longhorn
+resource "rancher2_app_v2" "longhorn_gcp" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_gcp.id
+  name = "longhorn"
+  namespace = "longhorn-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "longhorn"
+  chart_version = var.longchart
+
+  depends_on = [rancher2_app_v2.monitor_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 
 # Bitnami Catalog

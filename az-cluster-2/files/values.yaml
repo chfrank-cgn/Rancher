@@ -1,4 +1,14 @@
+ingressNginx:
+  enabled: true
 prometheus:
   prometheusSpec:
     retention: 1d
+rkeControllerManager:
+  enabled: true
+rkeEtcd:
+  enabled: true
+rkeProxy:
+  enabled: true
+rkeScheduler:
+  enabled: true
 

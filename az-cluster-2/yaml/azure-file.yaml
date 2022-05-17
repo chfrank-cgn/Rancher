@@ -2,7 +2,7 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: azure-file
-provisioner: kubernetes.io/azure-file
+provisioner: file.csi.azure.com
 mountOptions:
   - dir_mode=0777
   - file_mode=0777

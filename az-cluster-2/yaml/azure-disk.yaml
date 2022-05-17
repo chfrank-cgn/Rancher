@@ -4,7 +4,8 @@ metadata:
   name: azure-disk
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubernetes.io/azure-disk
+provisioner: disk.csi.azure.com
+volumeBindingMode: WaitForFirstConsumer
 parameters:
   storageaccounttype: Standard_LRS
   resourceGroup: az-cluster-2

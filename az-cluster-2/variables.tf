@@ -25,6 +25,11 @@ variable "logchart" {
 	default = "100.1.1"
 }
 
+# Bitnami URL
+variable "bitnami-url" {
+        default = "https://charts.bitnami.com/bitnami"
+}
+
 # Azure Resource Group
 variable "az-resource-group" {
 	default = "az-cluster-2"
@@ -43,6 +48,16 @@ variable "az-subnet" {
 # Azure Region
 variable "az-region" {
 	default = "eastus"
+}
+
+# Azure Availability Set
+variable "az-avset" {
+	default = "docker-machine"
+}
+
+# Azure Security Group
+variable "az-sec-group" {
+	default = "default-firewall"
 }
 
 # Hack: Time to wait for Kubernetes to deploy

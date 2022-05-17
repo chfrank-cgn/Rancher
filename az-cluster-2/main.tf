@@ -22,6 +22,9 @@ resource "rancher2_cluster" "cluster_az" {
         subscription_id = var.az-subscription-id
         tenant_id = var.az-tenant-id
         resource_group = var.az-resource-group
+        subnet_name = var.az-subnet
+        vnet_name = var.az-vnet
+        security_group_name= var.az-sec-group
       }
     }
     network {
@@ -76,6 +79,7 @@ resource "azurerm_linux_virtual_machine" "vm_az" {
   location = var.az-region
   size = var.type
   admin_username = "rancher"
+  availability_set_id = data.azurerm_availability_set.avset_az.id
   network_interface_ids = [
     azurerm_network_interface.vm_az_nic[count.index].id,
   ]
@@ -136,6 +140,7 @@ resource "rancher2_app_v2" "monitor_az" {
   cluster_id = rancher2_cluster.cluster_az.id
   name = "rancher-monitoring"
   namespace = "cattle-monitoring-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-monitoring"
   chart_version = var.monchart
@@ -152,6 +157,7 @@ resource "rancher2_app_v2" "syslog_crd_az" {
   cluster_id = rancher2_cluster.cluster_az.id
   name = "rancher-logging-crd"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging-crd"
   chart_version = var.logchart
@@ -167,10 +173,24 @@ resource "rancher2_app_v2" "syslog_az" {
   cluster_id = rancher2_cluster.cluster_az.id
   name = "rancher-logging"
   namespace = "cattle-logging-system"
+  project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
+  values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+}
+
+# Bitnami Catalog
+resource "rancher2_catalog_v2" "bitnami_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "bitnami"
+  url = var.bitnami-url
+
+  depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 

@@ -1,23 +1,13 @@
 # Input variables
 
-# Node disk size in GB
-variable "disksize" {
-	default = 30
-}
-
 # Node type
 variable "type" {
 	default = "Standard_D4s_v3"
 }
 
-# Kubernetes version
-variable "k8version" {
-	default = "1.21.9"
-}
-
 # Number of nodes
 variable "numnodes" {
-	default = 1
+	default = 2
 }
 
 # Azure Resource Group
@@ -25,29 +15,29 @@ variable "az-resource-group" {
 	default = "aks-cluster"
 }
 
-# Azure Vnet
-variable "az-vnet" {
-        default = "docker-machine-vnet"
-}
-
-# Azure Subnet
-variable "az-subnet" {
-        default = "docker-machine"
-}
-
 # Azure Region
 variable "az-region" {
 	default = "eastus"
 }
 
-# AKS Network plugin
-variable "az-plugin" {
-	default = "kubenet"
+# Monitoring chart
+variable "monchart" {
+        default = "100.1.2"
+}
+
+# Logging chart
+variable "logchart" {
+        default = "100.1.1"
+}
+
+# Bitnami URL
+variable "bitnami-url" {
+        default = "https://charts.bitnami.com/bitnami"
 }
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 60
+	default = 660
 }
 
 variable "rancher-url" { }

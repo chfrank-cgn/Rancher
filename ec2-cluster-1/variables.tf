@@ -50,11 +50,6 @@ variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"
 }
 
-# Prometheus URL
-variable "prom-url" {
-        default = "https://prometheus-community.github.io/helm-charts"
-}
-
 # EC2 Region
 variable "ec2-region" {
 	default = "eu-central-1"

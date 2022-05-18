@@ -138,7 +138,6 @@ resource "rancher2_app_v2" "syslog_ec2" {
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
-  values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_crd_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
@@ -200,7 +199,7 @@ resource "rancher2_app_v2" "monitor_ec2" {
   repo_name = "rancher-charts"
   chart_name = "rancher-monitoring"
   chart_version = var.monchart
-  values = data.template_file.values-yaml_data.rendered
+  values = templatefile("${path.module}/files/values.yaml", {})
 
   depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
@@ -213,18 +212,6 @@ resource "rancher2_catalog_v2" "bitnami" {
   cluster_id = rancher2_cluster.cluster_ec2.id
   name = "bitnami"
   url = var.bitnami-url
-
-  depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
-}
-
-# Prometheus Catalog
-resource "rancher2_catalog_v2" "prometheus" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_ec2.id
-  name = "prometheus"
-  url = var.prom-url
 
   depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }

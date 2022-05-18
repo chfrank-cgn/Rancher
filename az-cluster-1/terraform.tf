@@ -12,7 +12,7 @@ terraform {
   required_providers {
     local = {
       source  = "hashicorp/local"
-      version = "~> 2.1"
+      version = "~> 2.2"
     }
     null = {
       source  = "hashicorp/null"

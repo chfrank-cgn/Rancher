@@ -17,12 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.21.10-rancher1-1"
-}
-
-# Docker version
-variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/20.10.sh"
+	default = "v1.23.6+rke2r2"
 }
 
 # Number of nodes
@@ -38,6 +33,11 @@ variable "monchart" {
 # Logging chart
 variable "logchart" {
 	default = "100.1.1"
+}
+
+# Bitnami URL
+variable "bitnami-url" {
+        default = "https://charts.bitnami.com/bitnami"
 }
 
 # Azure open ports

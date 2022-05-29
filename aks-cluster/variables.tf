@@ -2,7 +2,7 @@
 
 # Node type
 variable "type" {
-	default = "Standard_D4s_v3"
+	default = "Standard_D4as_v4"
 }
 
 # Number of nodes
@@ -20,11 +20,6 @@ variable "az-region" {
 	default = "eastus"
 }
 
-# Monitoring chart
-variable "monchart" {
-        default = "100.1.2"
-}
-
 # Logging chart
 variable "logchart" {
         default = "100.1.1"
@@ -35,9 +30,19 @@ variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"
 }
 
+# Prometheus URL
+# variable "prometheus-url" {
+#         default = "https://prometheus-community.github.io/helm-charts"
+# }
+
+# Grafana URL
+# variable "grafana-url" {
+#         default = "https://grafana.github.io/helm-charts"
+# }
+
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 660
+	default = 720
 }
 
 variable "rancher-url" { }

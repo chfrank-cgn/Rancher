@@ -387,23 +387,6 @@ resource "rancher2_app_v2" "syslog_az" {
   depends_on = [rancher2_app_v2.syslog_crd_az,kubernetes_deployment.cattle_cluster_agent]
 }
 
-# Cluster monitoring
-resource "rancher2_app_v2" "monitor_az" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_az.id
-  name = "rancher-monitoring"
-  namespace = "cattle-monitoring-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-monitoring"
-  chart_version = var.monchart
-  values = templatefile("${path.module}/files/values.yaml", {})
-
-  depends_on = [rancher2_app_v2.syslog_az,kubernetes_deployment.cattle_cluster_agent]
-}
-
 # Bitnami Catalog
 resource "rancher2_catalog_v2" "bitnami_az" {
   lifecycle {
@@ -413,7 +396,7 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.monitor_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_app_v2.syslog_az,kubernetes_deployment.cattle_cluster_agent]
 }
 
 # Namespace clanup

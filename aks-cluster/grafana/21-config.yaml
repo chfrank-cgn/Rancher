@@ -38,33 +38,6 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-notifiers
-  namespace: monitoring
-data:
-  slack.yaml: |-
-    {
-        "apiVersion": 1,
-        "notifiers": [
-            {
-                "name": "Slack",
-                "type": "slack",
-                "orgId": 1,
-                "uid": "slack1",
-                "isDefault": true,
-                "sendReminder": true,
-                "frequency": "1h",
-                "settings": {
-                    "uploadImage": true,
-                    "recipient": "#aks-cluster",
-                    "url": "https://hooks.slack.com/services/XXXXXXXXXXXX/XXXXXXXXXXXX/xxxxxxxxxxxxxxxxxxxxxxxx"
-                }
-            }
-        ]
-    }
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: grafana-providers
   namespace: monitoring
 data:

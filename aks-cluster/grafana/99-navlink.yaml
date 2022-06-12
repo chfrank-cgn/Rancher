@@ -1,0 +1,17 @@
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: prometheus
+spec:
+  group: "Monitoring"
+  label: Prometheus
+  toURL: http://prometheus.ingress.host
+---
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: grafana
+spec:
+  group: "Monitoring"
+  label: Grafana
+  toURL: http://grafana.ingress.host

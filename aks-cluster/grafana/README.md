@@ -2,6 +2,9 @@
 
 Even though SUSE Rancher includes an operator-based Prometheus installation in the Apps Marketplace, it can be beneficial to manually install a complete Prometheus/Loki/Grafana stack.
 
+> These steps are aimed at rapid setup and teardown!  
+> The deployments are neither highly available nor do they offer persistence 
+
 ## State Metrics
 
 An essential tool for Kubernetes metrics is kube-state-metrics, which we will install first:

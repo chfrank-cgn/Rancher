@@ -1,0 +1,9 @@
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: kibana
+spec:
+  group: "Monitoring"
+  label: Kibana
+  toURL: http://kibanacgn.ddns.net
+

@@ -1,0 +1,28 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: all-logs
+  namespace: cattle-logging-system
+spec:
+  globalOutputRefs:
+    - elastic
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: elastic
+  namespace: cattle-logging-system
+spec:
+  elasticsearch:
+    buffer:
+      timekey: 30s
+      timekey_use_utc: true
+      timekey_wait: 10s
+      flush_interval: 5s
+    default_elasticsearch_version: "7"
+    host: elasticsearch.monitoring.svc
+    logstash_format: true
+    port: 9200
+    scheme: http
+    suppress_type_name: true
+

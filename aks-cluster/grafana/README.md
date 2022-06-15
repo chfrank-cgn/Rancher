@@ -49,7 +49,7 @@ Now that we have the data sources, we'll install Grafana for analysis:
 
 - `21-config.yaml` has the config maps for automatic provisioning
 - `21-dashboard.yaml` has the SUSE Rancher Home dashboard
-- `22-deployment.yaml` hast the actual deployment
+- `22-deployment.yaml` has the actual deployment
 
 Grafana 8 does not yet allow for automatic provisioning of notifiers for Unified Alerting; this is planned for Grafana 9 and tracked in Issue [#39510](https://github.com/grafana/grafana/discussions/39510).
 

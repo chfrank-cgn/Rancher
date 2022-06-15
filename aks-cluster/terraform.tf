@@ -32,7 +32,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.2"
+      version = "~> 3.3"
     }
     template = {
       source  = "hashicorp/template"

@@ -5,6 +5,13 @@ Here is a quick setup for Elasticsearch and Kibana.
 > These steps are aimed at rapid setup and teardown!  
 > The deployments are neither highly available nor do they offer persistence 
 
+## Kube State Metrics
+
+To support metricbeat we will install kube-state-metrics:
+
+- `20-roles.yaml` has the service account and role bindings
+- `22-deployment.yaml` has the actual deployment
+
 ## Prometheus
 
 The first piece of software we'll install is Elasticsearch:

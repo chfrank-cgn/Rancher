@@ -22,7 +22,7 @@ variable "az-region" {
 
 # Logging chart
 variable "logchart" {
-        default = "100.1.1"
+        default = "100.1.2"
 }
 
 # Bitnami URL
@@ -42,7 +42,7 @@ variable "bitnami-url" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 720
+	default = 570
 }
 
 variable "rancher-url" { }

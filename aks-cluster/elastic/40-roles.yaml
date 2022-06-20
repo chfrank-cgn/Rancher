@@ -1,0 +1,124 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat
+  namespace: monitoring
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: monitoring
+roleRef:
+  kind: Role
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: monitoring
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: monitoring
+roleRef:
+  kind: Role
+  name: metricbeat-kubeadm-config
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metricbeat
+  labels:
+    k8s-app: metricbeat
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  - services
+  verbs: ["get", "list", "watch"]
+# Enable this rule only if planing to use Kubernetes keystore
+#- apiGroups: [""]
+#  resources:
+#  - secrets
+#  verbs: ["get"]
+- apiGroups: ["extensions"]
+  resources:
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch"]
+  resources:
+  - jobs
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat
+  # should be the namespace where metricbeat is running
+  namespace: monitoring
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs: ["get", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: monitoring
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    resourceNames:
+      - kubeadm-config
+    verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+  namespace: monitoring
+  labels:
+    k8s-app: metricbeat
+

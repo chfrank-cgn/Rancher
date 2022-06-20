@@ -24,9 +24,25 @@ Now that we have the data source, we'll install Kibana for analysis:
 
 - `12-deployment.yaml` has the actual deployment
 
+## Filebeat
+
+To collect logfiles, we'll either install Filebeat, or enable Rancher logging, or both:
+
+- `30-roles.yaml` has the service account and role bindings
+- `31-config.yaml` has the configuration
+- `32-deployment.yaml` has the actual deployment
+
+## Metricbeat
+
+To collect metrics, we'll install Metricbeat:
+
+- `40-roles.yaml` has the service account and role bindings
+- `41-config.yaml` has the configuration
+- `42-deployment.yaml` has the actual deployment
+
 ## Syslog forwarding 
 
-To forward logs, we will need to configure Rancher's logging operator:
+As an option, we will configure Rancher's logging operator:
 
 - `51-config.yaml` has the cluster flow and output
 

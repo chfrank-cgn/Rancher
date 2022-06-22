@@ -6,7 +6,7 @@ metadata:
   labels: 
     app: kibana
   annotations:
-    esMajorVersion: "7"
+    esMajorVersion: "8"
 spec:
   replicas: 1
   selector:
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:7.17.3
+        image: docker.elastic.co/kibana/kibana:8.2.3
         env:
           - name: ELASTICSEARCH_HOSTS
             value: "http://elasticsearch.monitoring.svc:9200"

@@ -19,7 +19,8 @@ spec:
       timekey_use_utc: true
       timekey_wait: 10s
       flush_interval: 5s
-    default_elasticsearch_version: "7"
+      flush_mode: interval
+    default_elasticsearch_version: "8"
     host: elasticsearch.monitoring.svc
     logstash_format: true
     port: 9200

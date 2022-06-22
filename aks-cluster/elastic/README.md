@@ -12,14 +12,14 @@ To support metricbeat we will install kube-state-metrics:
 - `20-roles.yaml` has the service account and role bindings
 - `22-deployment.yaml` has the actual deployment
 
-## Prometheus
+## Elasticsearch
 
 The first piece of software we'll install is Elasticsearch:
 
 - `01-config.yaml` has the configuration
 - `02-deployment.yaml` has the actual deployment
 
-## Grafana
+## Kibana
 
 Now that we have the data source, we'll install Kibana for analysis:
 

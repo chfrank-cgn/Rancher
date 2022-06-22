@@ -36,10 +36,14 @@ spec:
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
           subPath: elasticsearch.yml
+        - name: data
+          mountPath: /usr/share/elasticsearch/data/
       volumes:
         - name: config
           configMap:
             name: elasticsearch-config
+        - name: data
+          emptyDir: {}
 ---
 kind: Service
 apiVersion: v1

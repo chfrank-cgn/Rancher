@@ -16,6 +16,7 @@ To support metricbeat we will install kube-state-metrics:
 
 The first piece of software we'll install is Elasticsearch:
 
+- `01-config.yaml` has the configuration
 - `02-deployment.yaml` has the actual deployment
 
 ## Grafana

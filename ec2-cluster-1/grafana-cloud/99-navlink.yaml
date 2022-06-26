@@ -1,0 +1,9 @@
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: grafana
+spec:
+  group: "Grafana Cloud"
+  label: Grafana
+  toURL: http://tenant.grafana.net
+

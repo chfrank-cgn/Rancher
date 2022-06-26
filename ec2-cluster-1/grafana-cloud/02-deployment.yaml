@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-agent-eventhandler-svc
+spec:
+  ports:
+  - port: 12345
+    name: http-metrics
+  clusterIP: None
+  selector:
+    name: grafana-agent-eventhandler
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-agent-eventhandler
+  namespace: grafana-agent
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana-agent-eventhandler
+    spec:
+      serviceAccountName: grafana-agent-eventhandler
+      containers:
+        - name: agent
+          image: grafana/agent:main
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config.file=/etc/agent/agent.yaml
+            - -enable-features=integrations-next
+            - -server.http.address=0.0.0.0:12345
+          command:
+            - /bin/agent
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          ports:
+            - containerPort: 12345
+              name: http-metrics
+          volumeMounts:
+            - name: grafana-agent
+              mountPath: /etc/agent
+      volumes:
+        - name: grafana-agent
+          configMap:
+            name: grafana-agent-eventhandler
+  selector:
+    matchLabels:
+      app: grafana-agent-eventhandler
+

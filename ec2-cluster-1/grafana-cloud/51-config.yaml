@@ -1,0 +1,30 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: all-logs
+  namespace: cattle-logging-system
+spec:
+  globalOutputRefs:
+    - loki
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: loki
+  namespace: cattle-logging-system
+spec:
+  loki:
+    configure_kubernetes_labels: true
+    password:
+      valueFrom:
+        secretKeyRef:
+          key: Pass
+          name: grafana
+    tenant: grafanacloud-chfrankcgn-logs
+    url: https://logs-prod-us-central1.grafana.net
+    username:
+      valueFrom:
+        secretKeyRef:
+          key: User
+          name: grafana
+

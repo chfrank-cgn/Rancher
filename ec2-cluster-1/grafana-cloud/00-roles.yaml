@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana-agent
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana-agent-eventhandler
+  namespace: grafana-agent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: grafana-agent-eventhandler
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: grafana-agent-eventhandler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: grafana-agent-eventhandler
+subjects:
+- kind: ServiceAccount
+  name: grafana-agent-eventhandler
+  namespace: grafana-agent
+

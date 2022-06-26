@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubecost-cost-analyzer
+  namespace: kubecost
+  labels:
+    app.kubernetes.io/name: cost-analyzer
+    app.kubernetes.io/instance: kubecost
+    app.kubernetes.io/managed-by: Helm
+    app: cost-analyzer
+data:
+    prometheus-alertmanager-endpoint: https://alertmanager-us-central1.grafana.net
+    prometheus-server-endpoint: https://prometheus-us-central1.grafana.net/api/prom
+    kubecost-token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: kubecost
+  labels:
+    app.kubernetes.io/name: cost-analyzer
+    app.kubernetes.io/instance: kubecost
+    app: cost-analyzer
+data:
+  nginx.conf: |
+    gzip_static  on;
+
+    # Enable gzip encoding for content of the provided types of 50kb and higher.
+    gzip on;
+    gzip_min_length 50000;
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_types
+        application/atom+xml
+        application/geo+json
+        application/javascript
+        application/x-javascript
+        application/json
+        application/ld+json
+        application/manifest+json
+        application/rdf+xml
+        application/rss+xml
+        application/vnd.ms-fontobject
+        application/wasm
+        application/x-web-app-manifest+json
+        application/xhtml+xml
+        application/xml
+        font/eot
+        font/otf
+        font/ttf
+        image/bmp
+        image/svg+xml
+        text/cache-manifest
+        text/calendar
+        text/css
+        text/javascript
+        text/markdown
+        text/plain
+        text/xml
+        text/x-component
+        text/x-cross-domain-policy;
+
+    upstream api {
+        server kubecost-cost-analyzer.kubecost:9001;
+    }
+
+    upstream model {
+        server kubecost-cost-analyzer.kubecost:9003;
+    }
+
+    server {
+        server_name _;
+        root /var/www;
+        index index.html;
+        large_client_header_buffers 4 32k;
+        add_header Cache-Control "must-revalidate";
+
+        error_page 504 /custom_504.html;
+        location = /custom_504.html {
+            internal;
+        }
+        add_header Cache-Control "max-age=300";
+        add_header ETag "1.94.2";
+        listen 9090;
+        listen [::]:9090;
+        location /api/ {
+            proxy_pass http://api/;
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+        location /model/ {
+            proxy_connect_timeout       180;
+            proxy_send_timeout          180;
+            proxy_read_timeout          180;
+            proxy_pass http://model/;
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        location ~ ^/(turndown|cluster)/ {
+
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            return 404;
+        }
+        location /saml/ {
+            proxy_connect_timeout       180;
+            proxy_send_timeout          180;
+            proxy_read_timeout          180;
+            proxy_pass http://model/saml/;
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+        location /login {
+            proxy_connect_timeout       180;
+            proxy_send_timeout          180;
+            proxy_read_timeout          180;
+            proxy_pass http://model/login;
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        location /logout {
+            proxy_connect_timeout       180;
+            proxy_send_timeout          180;
+            proxy_read_timeout          180;
+            proxy_pass http://model/logout;
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pricing-configs
+  namespace: kubecost
+  labels:
+    app.kubernetes.io/name: cost-analyzer
+    app.kubernetes.io/instance: kubecost
+    app: cost-analyzer
+data:
+    clusterName: "ec2-cluster-1"
+

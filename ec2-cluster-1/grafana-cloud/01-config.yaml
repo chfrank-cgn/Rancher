@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-agent-eventhandler
+  namespace: grafana-agent
+data:
+  agent.yaml: |
+    server:
+      log_level: info
+
+    integrations:
+      eventhandler:
+        cache_path: "./.eventcache/eventhandler.cache"
+
+    logs:
+      configs:
+      - name: default
+        clients:
+        - url: https://logs-prod-us-central1.grafana.net/api/prom/push
+          basic_auth:
+            username: xxxxx
+            password: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          external_labels:
+            cluster: "ec2-cluster-1"
+        positions:
+          filename: /tmp/positions0.yaml
+

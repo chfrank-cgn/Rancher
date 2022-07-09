@@ -20,7 +20,7 @@ spec:
         secretKeyRef:
           key: Pass
           name: grafana
-    tenant: grafanacloud-chfrankcgn-logs
+    tenant: grafanacloud-tenant-logs
     url: https://logs-prod-us-central1.grafana.net
     username:
       valueFrom:

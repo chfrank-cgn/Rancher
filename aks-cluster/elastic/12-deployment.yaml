@@ -19,12 +19,14 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:8.2.3
+        image: docker.elastic.co/kibana/kibana:8.3.2
         env:
           - name: ELASTICSEARCH_HOSTS
             value: "http://elasticsearch.monitoring.svc:9200"
           - name: SERVER_HOST
             value: "0.0.0.0"
+          - name: SERVER_PUBLICBASEURL
+            value: "http://kibana.ingress.host"
           - name: NODE_OPTIONS
             value: --max-old-space-size=1800
         ports:

@@ -29,9 +29,9 @@ data:
     #        paths:
     #          - /var/log/containers/*${data.kubernetes.container.id}.log
 
-    processors:
-      - add_cloud_metadata:
-      - add_host_metadata:
+    #processors:
+    #  - add_cloud_metadata:
+    #  - add_host_metadata:
 
     cloud.id: ${ELASTIC_CLOUD_ID}
     cloud.auth: ${ELASTIC_CLOUD_AUTH}

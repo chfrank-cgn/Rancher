@@ -41,7 +41,7 @@ The second instance is a simple Deployment that collects Kubernetes inventory da
 
 ## Prometheus metrics
 
-In addition to writing to a local instance, Telegraf can also write to multiple remote instances. Also, Telegraf can scrape metrics in Prometheus format. We'll use these features to send our Kubernetes state metrics to Influxdata's cloud:
+In addition to writing to a local instance, Telegraf can write to multiple remote instances. Also, Telegraf can scrape metrics in Prometheus format. We'll combine these two features to send our Kubernetes state metrics to Influxdata's cloud:
 
 - `41-config.yaml` has the configuration
 - `42-deployment.yaml` has the actual deployment

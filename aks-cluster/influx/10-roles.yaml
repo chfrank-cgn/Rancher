@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: telegraf
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: telegraf
+    app.kubernetes.io/instance: telegraf
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: influx-stats-viewer
+  labels:
+    app.kubernetes.io/name: telegraf
+    app.kubernetes.io/instance: telegraf
+    rbac.authorization.k8s.io/aggregate-view-telegraf-stats: "true"
+rules:
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes/proxy", "nodes/stats"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes", "nodes"]
+    verbs: ["get", "list"]
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: influx:telegraf
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        rbac.authorization.k8s.io/aggregate-view-telegraf-stats: "true"
+    - matchLabels:
+        rbac.authorization.k8s.io/aggregate-to-view: "true"
+rules: [] 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: influx-telegraf-viewer
+  labels:
+    app.kubernetes.io/name: telegraf
+    app.kubernetes.io/instance: telegraf
+subjects:
+  - kind: ServiceAccount
+    name: telegraf
+    namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: influx:telegraf
+

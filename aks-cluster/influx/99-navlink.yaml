@@ -1,0 +1,20 @@
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: influxdb
+spec:
+  group: "Monitoring"
+  label: InfluxDB
+  description: Local instance
+  toURL: http://influx.ingress.host
+---
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: influxdata
+spec:
+  group: "Monitoring"
+  label: InfluxDB
+  description: Cloud instance
+  toURL: https://tenant.cloud.influxdata.com
+

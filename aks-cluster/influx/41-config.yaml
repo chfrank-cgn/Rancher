@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-sm
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: telegraf-sm
+    app.kubernetes.io/instance: telegraf-sm
+data:
+  telegraf.conf: |+
+    
+    [agent]
+      collection_jitter = "0s"
+      debug = false
+      flush_interval = "120s"
+      flush_jitter = "0s"
+      hostname = "$HOSTNAME"
+      interval = "60s"
+      logfile = ""
+      metric_batch_size = 1000
+      metric_buffer_limit = 20000
+      omit_hostname = false
+      precision = ""
+      quiet = false
+      round_interval = true
+
+    [[outputs.influxdb_v2]]
+      urls = [ "https://tenant.cloud.influxdata.com" ]
+      token ="influxdata-token"
+      organization = "tenant-org"
+      bucket = "aks-cluster"
+
+    [[inputs.prometheus]]
+      urls = ["http://kube-state-metrics.kube-system.svc:8080/metrics"]
+      [[inputs.prometheus.tags]]
+        cluster = "aks-cluster"
+

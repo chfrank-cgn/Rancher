@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: influxdb
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/instance: influxdb
+

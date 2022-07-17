@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/instance: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: influxdb2
+      app.kubernetes.io/instance: influxdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: influxdb2
+        app.kubernetes.io/instance: influxdb
+    spec:
+      serviceAccountName: influxdb
+      containers:
+        - name: influxdb2
+          image: "influxdb:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8086
+          env:
+            # Automated setup will not run if an existing boltdb file is found at the configured path.
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            # The username to set for the system's initial super-user (Required).
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: admin
+            # The password to set for the system's inital super-user (Required).
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              value: password
+            # The name to set for the system's initial organization (Required).
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: aks-cluster
+            # The name to set for the system's initial bucket (Required).
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: metrics
+            # The duration the system's initial bucket should retain data.
+            - name: DOCKER_INFLUXDB_INIT_RETENTION
+              value: 1d
+            # The authentication token to associate with the system's initial super-user.
+            - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+              value: pre-shared-local-token
+            # Path to the BoltDB database.
+            - name: INFLUXD_BOLT_PATH
+              value: /var/lib/influxdb2/influxd.bolt
+            # Path to persistent storage engine files.
+            - name: INFLUXD_ENGINE_PATH
+              value: /var/lib/influxdb2
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/influxdb2
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/instance: influxdb
+spec:
+  selector:
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/instance: influxdb
+  type: ClusterIP
+  ports:
+    - port: 8086
+      targetPort: 8086
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: influxdb
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: influxdb2
+    app.kubernetes.io/instance: influxdb
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+    - host: influx.ingress.host
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: influxdb
+                port:
+                  number: 8086
+

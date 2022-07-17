@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: telegraf
+    app.kubernetes.io/instance: telegraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: telegraf
+      app.kubernetes.io/instance: telegraf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: telegraf
+        app.kubernetes.io/instance: telegraf
+    spec:
+      serviceAccountName: telegraf
+      containers:
+      - name: telegraf
+        image: "telegraf:latest"
+        imagePullPolicy: "IfNotPresent"
+        env:
+        - name: HOSTNAME
+          value: aks-cluster
+        volumeMounts:
+        - name: config
+          mountPath: /etc/telegraf
+      volumes:
+      - name: config
+        configMap:
+          name: telegraf
+

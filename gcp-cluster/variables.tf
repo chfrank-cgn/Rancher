@@ -52,7 +52,7 @@ variable "bitnami-url" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 660
+	default = 780
 }
 
 variable "rancher-url" { }

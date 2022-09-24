@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.22.9-rancher1-1"
+	default = "v1.23.10-rancher1-1"
 }
 
 # Docker version
@@ -32,17 +32,17 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "100.1.2"
+	default = "100.1.3"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "100.1.1"
+	default = "100.1.3"
 }
 
 # Longhorn chart
 variable "longchart" {
-	default = "100.1.2"
+	default = "100.2.2"
 }
 
 # Bitnami URL

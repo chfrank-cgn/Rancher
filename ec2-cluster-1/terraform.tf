@@ -12,7 +12,7 @@ terraform {
   required_providers {
     local = {
       source  = "hashicorp/local"
-      version = "~> 2.1"
+      version = "~> 2.2"
     }
     null = {
       source  = "hashicorp/null"
@@ -20,11 +20,11 @@ terraform {
     }
     rancher2 = {
       source  = "rancher/rancher2"
-      version = "~> 1.23"
+      version = "~> 1.24"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.1"
+      version = "~> 3.4"
     }
   }
 }

@@ -22,7 +22,7 @@ variable "az-region" {
 
 # Logging chart
 variable "logchart" {
-        default = "100.1.2"
+        default = "100.1.3"
 }
 
 # Bitnami URL

@@ -16,15 +16,15 @@ terraform {
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 3.1"
+      version = "~> 3.2"
     }
     rancher2 = {
       source  = "rancher/rancher2"
-      version = "~> 1.23"
+      version = "~> 1.24"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.1"
+      version = "~> 3.4"
     }
   }
 }

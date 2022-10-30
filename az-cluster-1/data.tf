@@ -6,3 +6,8 @@ data "rancher2_project" "system" {
     name = "System"
 }
 
+#Workaround for 835
+data "rancher2_cloud_credential" "credential_az" {
+  name = var.credentials
+}
+

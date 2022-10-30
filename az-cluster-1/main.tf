@@ -5,16 +5,6 @@ resource "random_id" "instance_id" {
  byte_length = 3
 }
 
-# Rancher cloud credentials
-resource "rancher2_cloud_credential" "credential_az" {
-  name = "Azure Credentials"
-  azure_credential_config {
-    client_id = var.az-client-id
-    client_secret = var.az-client-secret
-    subscription_id = var.az-subscription-id
-  }
-}
-
 # Rancher machine pool
 resource "rancher2_machine_config_v2" "machine_az" {
   generate_name = "${random_id.instance_id.hex}"
@@ -24,6 +14,7 @@ resource "rancher2_machine_config_v2" "machine_az" {
     location = var.az-region
     managed_disks = true
     open_port = var.az-portlist
+    private_address_only = false
     resource_group = var.az-resource-group
     storage_type = var.az-storage-type
     size = var.type
@@ -44,8 +35,8 @@ resource "rancher2_cluster_v2" "cluster_az" {
   }
   rke_config {
     machine_pools {
-      name = "pool-${random_id.instance_id.hex}"
-      cloud_credential_secret_name = rancher2_cloud_credential.credential_az.id
+      name = "node"
+      cloud_credential_secret_name = data.rancher2_cloud_credential.credential_az.id
       control_plane_role = true
       etcd_role = true
       worker_role = true
@@ -55,6 +46,11 @@ resource "rancher2_cluster_v2" "cluster_az" {
         name = rancher2_machine_config_v2.machine_az.name
       }
     }
+    machine_global_config = <<EOF
+cni: canal
+kubelet-arg:
+  - "max-pods=70"
+EOF
     etcd {
       disable_snapshots = true
     }
@@ -135,6 +131,23 @@ resource "rancher2_app_v2" "syslog_az" {
   depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster_v2.cluster_az]
 }
 
+# Longhorn
+resource "rancher2_app_v2" "longhorn_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
+  name = "longhorn"
+  namespace = "longhorn-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "longhorn"
+  chart_version = var.longchart
+
+  depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster_v2.cluster_az]
+}
+
+
 # Bitnami Catalog
 resource "rancher2_catalog_v2" "bitnami_az" {
   lifecycle {
@@ -144,6 +157,6 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster_v2.cluster_az]
+  depends_on = [rancher2_app_v2.longhorn_az,rancher2_cluster_v2.cluster_az]
 }
 

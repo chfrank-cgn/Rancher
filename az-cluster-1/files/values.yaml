@@ -1,4 +1,37 @@
+alertmanager:
+  config:
+    receivers:
+      - name: slack-receiver
+        slack_configs:
+          - send_resolved: true
+            api_url: >-
+              https://hooks.slack.com/services/XXX/XXXXXX/XXXXXXXXX
+            channel: '#az-cluster-1'
+      - name: 'null'
+    route:
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
+      receiver: 'slack-receiver'
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+        continue: true
+      - match: {}
+        match_re:
+          alertname: '.*'
+        receiver: slack-receiver
 prometheus:
   prometheusSpec:
     retention: 1d
+rke2ControllerManager:
+  enabled: true
+rke2Etcd:
+  enabled: true
+rke2Proxy:
+  enabled: true
+rke2Scheduler:
+  enabled: true
 

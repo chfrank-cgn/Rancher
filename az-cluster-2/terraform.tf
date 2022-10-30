@@ -12,7 +12,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.24"
+      version = "~> 3.28"
     }
     local = {
       source  = "hashicorp/local"
@@ -20,7 +20,7 @@ terraform {
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 3.1"
+      version = "~> 3.2"
     }
     rancher2 = {
       source  = "rancher/rancher2"

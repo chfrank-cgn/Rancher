@@ -12,7 +12,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 4.31"
+      version = "~> 4.41"
     }
     local = {
       source  = "hashicorp/local"
@@ -20,7 +20,7 @@ terraform {
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 3.1"
+      version = "~> 3.2"
     }
     rancher2 = {
       source  = "rancher/rancher2"
@@ -28,7 +28,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.3"
+      version = "~> 3.4"
     }
     template = {
       source  = "hashicorp/template"

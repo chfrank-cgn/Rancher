@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: cadvisor
+  name: cadvisor
+  namespace: kube-system
+spec:
+  endpoints:
+  - metricRelabelings:
+    - sourceLabels:
+      - container_label_io_kubernetes_pod_name
+      targetLabel: pod
+    - sourceLabels:
+      - container_label_io_kubernetes_container_name
+      targetLabel: container
+    - sourceLabels:
+      - container_label_io_kubernetes_pod_namespace
+      targetLabel: namespace
+    - action: labeldrop
+      regex: container_label_io_kubernetes_pod_name
+    - action: labeldrop
+      regex: container_label_io_kubernetes_container_name
+    - action: labeldrop
+      regex: container_label_io_kubernetes_pod_namespace
+    port: cadvisor
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: node
+    - sourceLabels:
+      - __metrics_path__
+      targetLabel: metrics_path
+      replacement: /metrics/cadvisor
+    - sourceLabels:
+      - job
+      targetLabel: job
+      replacement: kubelet
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      app: cadvisor
+

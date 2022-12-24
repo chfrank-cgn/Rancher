@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
         resources:
           requests:
             memory: 1Gi

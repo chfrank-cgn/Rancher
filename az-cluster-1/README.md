@@ -65,7 +65,7 @@ resource "rancher2_machine_config_v2" "control_az" {
 }
 ```
 
-The machine pool for the worked nodes looks very much the same, just with different node types and sizes
+The machine pool for the worker nodes looks very much the same, just with different node types and sizes
 
 ### Variables
 

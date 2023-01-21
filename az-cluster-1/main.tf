@@ -5,11 +5,21 @@ resource "random_id" "instance_id" {
  byte_length = 3
 }
 
+# Rancher cloud credentials
+resource "rancher2_cloud_credential" "credential_az" {
+  name = "Azure Credentials"
+  azure_credential_config {
+    client_id = var.az-client-id
+    client_secret = var.az-client-secret
+    subscription_id = var.az-subscription-id
+  }
+}
+
 # Rancher machine pool
-resource "rancher2_machine_config_v2" "machine_az" {
+resource "rancher2_machine_config_v2" "agent_az" {
   generate_name = "${random_id.instance_id.hex}"
   azure_config {
-    disk_size = var.disksize
+    disk_size = var.agent-disk
     image = var.image
     location = var.az-region
     managed_disks = true
@@ -17,7 +27,23 @@ resource "rancher2_machine_config_v2" "machine_az" {
     private_address_only = false
     resource_group = var.az-resource-group
     storage_type = var.az-storage-type
-    size = var.type
+    size = var.agent-type
+  }
+}
+
+# Rancher machine pool
+resource "rancher2_machine_config_v2" "control_az" {
+  generate_name = "${random_id.instance_id.hex}"
+  azure_config {
+    disk_size = var.control-disk
+    image = var.image
+    location = var.az-region
+    managed_disks = true
+    open_port = var.az-portlist
+    private_address_only = false
+    resource_group = var.az-resource-group
+    storage_type = var.az-storage-type
+    size = var.control-type
   }
 }
 
@@ -35,26 +61,38 @@ resource "rancher2_cluster_v2" "cluster_az" {
   }
   rke_config {
     machine_pools {
-      name = "node"
-      cloud_credential_secret_name = data.rancher2_cloud_credential.credential_az.id
+      name = "control"
+      cloud_credential_secret_name = rancher2_cloud_credential.credential_az.id
       control_plane_role = true
       etcd_role = true
-      worker_role = true
-      quantity = var.numnodes 
+      worker_role = false
+      quantity = var.numcontrol 
       machine_config {
-        kind = rancher2_machine_config_v2.machine_az.kind
-        name = rancher2_machine_config_v2.machine_az.name
+        kind = rancher2_machine_config_v2.control_az.kind
+        name = rancher2_machine_config_v2.control_az.name
+      }
+    }
+    machine_pools {
+      name = "agent"
+      cloud_credential_secret_name = rancher2_cloud_credential.credential_az.id
+      control_plane_role = false
+      etcd_role = false
+      worker_role = true
+      quantity = var.numagent 
+      machine_config {
+        kind = rancher2_machine_config_v2.agent_az.kind
+        name = rancher2_machine_config_v2.agent_az.name
       }
     }
     machine_global_config = <<EOF
 cni: canal
-kubelet-arg:
-  - "max-pods=70"
 EOF
     etcd {
       disable_snapshots = true
     }
   }
+
+  depends_on = [rancher2_cloud_credential.credential_az]
 }
 
 # Delay hack part 1
@@ -143,6 +181,7 @@ resource "rancher2_app_v2" "longhorn_az" {
   repo_name = "rancher-charts"
   chart_name = "longhorn"
   chart_version = var.longchart
+  values = templatefile("${path.module}/files/values-longhorn.yaml", {})
 
   depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster_v2.cluster_az]
 }

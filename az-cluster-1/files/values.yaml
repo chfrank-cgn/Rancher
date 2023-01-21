@@ -30,6 +30,8 @@ rke2ControllerManager:
   enabled: true
 rke2Etcd:
   enabled: true
+rke2IngressNginx:
+  enabled: false
 rke2Proxy:
   enabled: true
 rke2Scheduler:

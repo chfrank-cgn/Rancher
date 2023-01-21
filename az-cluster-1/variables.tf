@@ -6,23 +6,38 @@ variable "image" {
 }
 
 # Node disk size in GB
-variable "disksize" {
-	default = 128
+variable "agent-disk" {
+	default = 256
+}
+
+# Node disk size in GB
+variable "control-disk" {
+	default = 64
 }
 
 # Node type
-variable "type" {
-	default = "Standard_D4s_v3"
+variable "agent-type" {
+	default = "Standard_D8s_v3"
+}
+
+# Node type
+variable "control-type" {
+	default = "Standard_D2s_v3"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.24.4+rke2r1"
+	default = "v1.24.8+rke2r1"
 }
 
 # Number of nodes
-variable "numnodes" {
+variable "numcontrol" {
 	default = 3
+}
+
+# Number of nodes
+variable "numagent" {
+	default = 2
 }
 
 # Monitoring chart

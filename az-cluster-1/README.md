@@ -12,7 +12,6 @@ I'm assuming that you have set up Terraform already. As a first step, we need to
 provider "rancher2" {
   api_url = var.rancher-url
   token_key = var.rancher-token
-  insecure = true
 }
 ```
 

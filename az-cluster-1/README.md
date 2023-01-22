@@ -31,7 +31,7 @@ resource "random_id" "instance_id" {
 
 ### Credentials
 
-The next step is to define the EC2 credentials so that Terraform and Rancher can create the EC2 instances:
+The next step is to define the credentials so that Rancher can create all the Azure instances:
 
 ```
 resource "rancher2_cloud_credential" "credential_az" {

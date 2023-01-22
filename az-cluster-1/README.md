@@ -44,7 +44,7 @@ resource "rancher2_cloud_credential" "credential_az" {
 }
 ```
 
-### Node template
+### Machine pools
 
 With the credentials from above, we set up a machine pool for the control plane:
 

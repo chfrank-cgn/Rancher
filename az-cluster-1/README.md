@@ -123,7 +123,8 @@ EOF
 
 ### Cluster sync
 
-We're almost ready; just let's wait for the cluster to become active, using a timer:
+We're almost ready; just let's wait for the cluster to become active, using a timer.
+The new v2 resource waits for the cluster to report back to Rancher (unlike v1), but I do prefer to add some time and wait for the cattle agents and fleet to settle.
 
 ```
 resource "null_resource" "before" {

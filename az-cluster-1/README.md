@@ -86,7 +86,7 @@ variable "numcontrol" {
 
 ### Cluster
 
-Now that we have all set up, it's time to define the Kubernetes cluster, using the name from above and set Kubernetes networking and version:
+Now that we have all set up, it’s time to define the Kubernetes cluster using the name from above and set Kubernetes networking and version using the new v2 resource:
 
 ```
 resource "rancher2_cluster_v2" "cluster_az" {

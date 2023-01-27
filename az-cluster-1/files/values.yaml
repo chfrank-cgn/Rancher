@@ -23,6 +23,8 @@ alertmanager:
         match_re:
           alertname: '.*'
         receiver: slack-receiver
+nodeExporter:
+  enabled: true
 prometheus:
   prometheusSpec:
     retention: 1d
@@ -31,7 +33,7 @@ rke2ControllerManager:
 rke2Etcd:
   enabled: true
 rke2IngressNginx:
-  enabled: false
+  enabled: true
 rke2Proxy:
   enabled: true
 rke2Scheduler:

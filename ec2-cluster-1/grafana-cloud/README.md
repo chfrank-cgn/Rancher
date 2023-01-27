@@ -31,6 +31,7 @@ For cost analysis, we will then install kubecost:
 
 To get metrics from Longhorn, we can enable monitoring:
 
+- `22-deployment.yaml` has a small NFS service for backup
 - `23-monitor.yaml` has the service monitor
 
 ## Syslog forwarding 

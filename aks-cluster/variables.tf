@@ -25,6 +25,11 @@ variable "logchart" {
         default = "100.1.3"
 }
 
+# OPA chart
+variable "opachart" {
+        default = "100.2.0"
+}
+
 # Bitnami URL
 variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"

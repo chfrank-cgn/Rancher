@@ -34,9 +34,17 @@ To get metrics from Longhorn, we can enable monitoring:
 - `22-deployment.yaml` has a small NFS service for backup
 - `23-monitor.yaml` has the service monitor
 
+## RKE 1.24 cAdvisor Workaround
+
+To work around Github Issue [38934](https://github.com/rancher/rancher/issues/38934#issuecomment-1294585708) we add a separate cadvisor instance:
+
+- `30-roles.yaml` has the service account and role bindings
+- `32-deployment.yaml` has the actual deployment
+- `33-monitor.yaml` has the service monitor
+
 ## Syslog forwarding 
 
-To forward the system and pod logs, we will need to configure Rancher's logging operator:
+To forward the system and pod logs to Grafana Cloud, we will need to configure Rancher's logging operator:
 
 - `51-config.yaml` has the cluster flow and output
 

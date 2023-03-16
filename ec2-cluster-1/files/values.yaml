@@ -4,9 +4,6 @@ ingressNginx:
   enabled: true
 kubeApiServer:
   enabled: false
-kubelet:
-  serviceMonitor:
-    cAdvisor: false
 prometheus:
   prometheusSpec:
     remoteWrite:

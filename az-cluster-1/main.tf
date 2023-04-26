@@ -137,22 +137,6 @@ resource "rancher2_app_v2" "monitor_az" {
   depends_on = [local_file.kubeconfig,rancher2_cluster_v2.cluster_az]
 }
 
-# Cluster logging CRD
-resource "rancher2_app_v2" "syslog_crd_az" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
-  name = "rancher-logging-crd"
-  namespace = "cattle-logging-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-logging-crd"
-  chart_version = var.logchart
-
-  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster_v2.cluster_az]
-}
-
 # Cluster logging
 resource "rancher2_app_v2" "syslog_az" {
   lifecycle {
@@ -166,7 +150,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_name = "rancher-logging"
   chart_version = var.logchart
 
-  depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster_v2.cluster_az]
+  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster_v2.cluster_az]
 }
 
 # Longhorn

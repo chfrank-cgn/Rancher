@@ -12,7 +12,7 @@ variable "agent-disk" {
 
 # Node disk size in GB
 variable "control-disk" {
-	default = 64
+	default = 128
 }
 
 # Node type
@@ -27,7 +27,7 @@ variable "control-type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.24.10+rke2r1"
+	default = "v1.25.7+rke2r1"
 }
 
 # Number of nodes
@@ -42,17 +42,17 @@ variable "numagent" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "100.2.0"
+	default = "102.0.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "100.1.4"
+	default = "102.0.0"
 }
 
 # Longhorn chart
 variable "longchart" {
-	default = "100.3.0"
+	default = "102.2.0"
 }
 
 # Bitnami URL

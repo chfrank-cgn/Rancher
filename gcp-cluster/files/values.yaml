@@ -35,9 +35,6 @@ grafana:
     - grafanacgn.ddns.net
 ingressNginx:
   enabled: true
-kubelet:
-  serviceMonitor:
-    cAdvisor: false
 prometheus:
   prometheusSpec:
     retention: 1d

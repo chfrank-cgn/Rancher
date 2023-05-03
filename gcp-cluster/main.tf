@@ -86,22 +86,6 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster logging CRD
-resource "rancher2_app_v2" "syslog_crd_gcp" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_gcp.id
-  name = "rancher-logging-crd"
-  namespace = "cattle-logging-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-logging-crd"
-  chart_version = var.logchart
-
-  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
-}
-
 # Cluster logging
 resource "rancher2_app_v2" "syslog_gcp" {
   lifecycle {
@@ -116,7 +100,7 @@ resource "rancher2_app_v2" "syslog_gcp" {
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
-  depends_on = [rancher2_app_v2.syslog_crd_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
+  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }
 
 # Cluster monitoring
@@ -148,6 +132,7 @@ resource "rancher2_app_v2" "longhorn_gcp" {
   repo_name = "rancher-charts"
   chart_name = "longhorn"
   chart_version = var.longchart
+  values = templatefile("${path.module}/files/values-longhorn.yaml", {})
 
   depends_on = [rancher2_app_v2.monitor_gcp,rancher2_cluster.cluster_gcp,google_compute_instance.vm_gcp]
 }

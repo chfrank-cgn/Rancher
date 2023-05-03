@@ -1,5 +1,3 @@
 defaultSettings:
   deletingConfirmationFlag: true
-persistence:
-  defaultClassReplicaCount: 2
 

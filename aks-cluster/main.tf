@@ -374,22 +374,6 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster logging CRD
-resource "rancher2_app_v2" "syslog_crd_az" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_az.id
-  name = "rancher-logging-crd"
-  namespace = "cattle-logging-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-logging-crd"
-  chart_version = var.logchart
-
-  depends_on = [local_file.kubeconfig,kubernetes_deployment.cattle_cluster_agent,rancher2_cluster.cluster_az,azurerm_kubernetes_cluster.cluster_az]
-}
-
 # Cluster logging
 resource "rancher2_app_v2" "syslog_az" {
   lifecycle {
@@ -403,7 +387,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_name = "rancher-logging"
   chart_version = var.logchart
 
-  depends_on = [rancher2_app_v2.syslog_crd_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [local_file.kubeconfig,kubernetes_deployment.cattle_cluster_agent,rancher2_cluster.cluster_az,azurerm_kubernetes_cluster.cluster_az]
 }
 
 # OPA Gatekeeper

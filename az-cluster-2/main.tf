@@ -148,22 +148,6 @@ resource "rancher2_app_v2" "monitor_az" {
   depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 
-# Cluster logging CRD
-resource "rancher2_app_v2" "syslog_crd_az" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_az.id
-  name = "rancher-logging-crd"
-  namespace = "cattle-logging-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-logging-crd"
-  chart_version = var.logchart
-
-  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
-}
-
 # Cluster logging
 resource "rancher2_app_v2" "syslog_az" {
   lifecycle {
@@ -178,7 +162,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
-  depends_on = [rancher2_app_v2.syslog_crd_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 
 # Bitnami Catalog

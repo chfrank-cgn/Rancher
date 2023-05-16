@@ -1,14 +1,16 @@
-ingressNginx:
+nodeExporter:
   enabled: true
 prometheus:
   prometheusSpec:
     retention: 1d
-rkeControllerManager:
+rke2ControllerManager:
   enabled: true
-rkeEtcd:
+rke2Etcd:
   enabled: true
-rkeProxy:
+rke2IngressNginx:
   enabled: true
-rkeScheduler:
+rke2Proxy:
+  enabled: true
+rke2Scheduler:
   enabled: true
 

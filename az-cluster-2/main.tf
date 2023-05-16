@@ -6,39 +6,47 @@ resource "random_id" "instance_id" {
 }
 
 # Rancher cluster
-resource "rancher2_cluster" "cluster_az" {
-  name         = "az-${random_id.instance_id.hex}"
-  description  = "Terraform"
+resource "rancher2_cluster_v2" "cluster_az" {
+  name = "az-${random_id.instance_id.hex}"
+  kubernetes_version = var.k8version
+  enable_network_policy = false
 
+  annotations = {
+    "field.cattle.io/description" = "Terraform"
+  }
+  local_auth_endpoint {
+    enabled = false
+  }
   rke_config {
-    kubernetes_version = var.k8version
-    ignore_docker_version = false
-    cloud_provider {
-      name = "azure"
-      azure_cloud_provider {
-        aad_client_id = var.az-client-id
-        aad_client_secret = var.az-client-secret
-        subscription_id = var.az-subscription-id
-        tenant_id = var.az-tenant-id
-        resource_group = var.az-resource-group
-        subnet_name = var.az-subnet
-        vnet_name = var.az-vnet
-        security_group_name= var.az-sec-group
-      }
+    etcd {
+      disable_snapshots = true
     }
-    network {
-      plugin = "flannel"
-    }
-    services { 
-      etcd {
-        backup_config {
-          enabled = false
-        }
-      }
-      kubelet {
-        extra_args  = {
-          max_pods = 70
-        }
+    machine_global_config = <<EOF
+cni: canal
+kube-controller-manager-arg:
+  - '--configure-cloud-routes=false'
+EOF
+    machine_selector_config {
+      config = {
+        cloud-provider-config = <<EOF
+{ 
+  "cloud": "AzurePublicCloud",
+  "aadClientId": "${var.az-client-id}",
+  "aadClientSecret": "${var.az-client-secret}",
+  "subscriptionId": "${var.az-subscription-id}",
+  "tenantId": "${var.az-tenant-id}",
+  "resourceGroup": "${var.az-resource-group}",
+  "location": "${var.az-region}",
+  "subnetName": "${var.az-subnet}",
+  "vnetName": "${var.az-vnet}",
+  "securityGroupName": "${var.az-sec-group}",
+  "primaryAvailabilitySetName": "${var.az-avset}",
+  "cloudProviderBackoff": false,
+  "useManagedIdentityExtension": false,
+  "useInstanceMetadata": true
+}
+EOF
+        cloud-provider-name = "azure"
       }
     }
   }
@@ -108,7 +116,7 @@ resource "azurerm_linux_virtual_machine" "vm_az" {
 
 # Delay hack part 1
 resource "null_resource" "before" {
-  depends_on = [rancher2_cluster.cluster_az]
+  depends_on = [rancher2_cluster_v2.cluster_az]
 }
 
 # Delay hack part 2
@@ -125,7 +133,7 @@ resource "null_resource" "delay" {
 # Kubeconfig file
 resource "local_file" "kubeconfig" {
   filename = "${path.module}/.kube/config"
-  content = rancher2_cluster.cluster_az.kube_config
+  content = rancher2_cluster_v2.cluster_az.kube_config
   file_permission = "0600"
 
   depends_on = [null_resource.delay]
@@ -136,7 +144,7 @@ resource "rancher2_app_v2" "monitor_az" {
   lifecycle {
     ignore_changes = all
   }
-  cluster_id = rancher2_cluster.cluster_az.id
+  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
   name = "rancher-monitoring"
   namespace = "cattle-monitoring-system"
   project_id = data.rancher2_project.system.id
@@ -145,7 +153,7 @@ resource "rancher2_app_v2" "monitor_az" {
   chart_version = var.monchart
   values = templatefile("${path.module}/files/values.yaml", {})
 
-  depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+  depends_on = [local_file.kubeconfig,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 
 # Cluster logging
@@ -153,7 +161,7 @@ resource "rancher2_app_v2" "syslog_az" {
   lifecycle {
     ignore_changes = all
   }
-  cluster_id = rancher2_cluster.cluster_az.id
+  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
   name = "rancher-logging"
   namespace = "cattle-logging-system"
   project_id = data.rancher2_project.system.id
@@ -162,7 +170,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
-  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 
 # Bitnami Catalog
@@ -170,10 +178,10 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   lifecycle {
     ignore_changes = all
   }
-  cluster_id = rancher2_cluster.cluster_az.id
+  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster.cluster_az,azurerm_linux_virtual_machine.vm_az]
+  depends_on = [rancher2_app_v2.syslog_az,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 

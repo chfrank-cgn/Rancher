@@ -6,7 +6,12 @@
 helm --kubeconfig=../.kube/config repo update
 sleep 5
 
-kubectl --kubeconfig=../.kube/config create configmap azure-cred-file --from-literal=path="/etc/kubernetes/cloud-config" -n kube-system
+# Update secret with new credentials
+#
+# /var/lib/rancher/rke2/etc/config-files/cloud-provider-config
+# cat cloud-provider-config | base64 | awk '{printf $0}'; echo
+#
+kubectl apply -f azure-cloud-provider.yaml
 sleep 5
 
 helm install azuredisk-csi-driver azuredisk-csi-driver/azuredisk-csi-driver --kubeconfig ../.kube/config --namespace kube-system --set controller.allowEmptyCloudConfig=true

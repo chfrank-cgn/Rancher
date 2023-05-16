@@ -7,7 +7,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.25.9-rancher2-1"
+	default = "v1.25.9+rke2r1"
 }
 
 # Number of nodes
@@ -62,7 +62,7 @@ variable "az-sec-group" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 960
+	default = 840
 }
 
 variable "rancher-url" { }

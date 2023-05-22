@@ -117,28 +117,8 @@ resource "kubernetes_service_account" "cattle" {
     name      = "cattle"
     namespace = "cattle-system"
   }
-  secret {
-    name = "cattle-token-${random_id.instance_id.hex}"
-  }
 
   depends_on = [kubernetes_namespace.cattle_system]
-}
-
-# Service account token
-resource "kubernetes_secret" "cattle-token" {
-  lifecycle {
-    ignore_changes = all
-  }
-  metadata {
-    annotations = {
-      "kubernetes.io/service-account.name" = "cattle"
-    }
-    name = "cattle-token-${random_id.instance_id.hex}"
-    namespace = "cattle-system"
-  }
-  type = "kubernetes.io/service-account-token"
-
-  depends_on = [kubernetes_service_account.cattle]
 }
 
 # Cluster role binding

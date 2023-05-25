@@ -34,33 +34,67 @@ data:
             }
         ]
     }
+  tempo.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+                "access":"proxy",
+                "editable": false,
+                "name": "Tempo",
+                "orgId": 1,
+                "type": "tempo",
+                "url": "http://tempo.monitoring.svc:3100",
+                "version": 1
+            }
+        ]
+    }
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-notifiers
+  name: grafana-alerting
   namespace: monitoring
 data:
-  slack.yaml: |-
-    {
-        "apiVersion": 1,
-        "notifiers": [
-            {
-                "name": "Slack",
-                "type": "slack",
-                "orgId": 1,
-                "uid": "slack1",
-                "isDefault": true,
-                "sendReminder": true,
-                "frequency": "1h",
-                "settings": {
-                    "uploadImage": true,
-                    "recipient": "#aks-cluster",
-                    "url": "https://hooks.slack.com/services/XXXXXXXXXXXX/XXXXXXXXXXXX/xxxxxxxxxxxxxxxxxxxxxxxx"
-                }
-            }
-        ]
-    }
+  provisioning.yaml: |
+    groups:
+      - orgId: 1
+        name: watchdog
+        folder: watchdog
+        interval: 1m
+        rules:
+          - uid: watchdog1
+            title: Watchdog
+            condition: always
+            data:
+              - refId: always
+                relativeTimeRange:
+                  from: 900
+                  to: 0
+                model:
+                  expr: vector(1)
+                  refId: always
+            noDataState: Alerting
+            execErrState: Alerting
+            for: 5m
+            labels:
+              severity: info
+    contactPoints:
+      - orgId: 1
+        name: slack-receiver
+        receivers:
+          - uid: slack1
+            type: slack
+            settings:
+              recipient: '#aks-cluster'
+              url: >-
+                ttps://hooks.slack.com/services/XXXXXXXXXXXX/XXXXXXXXXXXX/xxxxxxxxxxxxxxxxxxxxxxxx
+    policies:
+      - orgId: 1
+        receiver: slack-receiver
+        repeat_interval: 1h
+        routes:
+          - receiver: slack-receiver
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -2,7 +2,7 @@
 
 Even though SUSE Rancher includes an operator-based Prometheus installation in the Apps Marketplace, it can be beneficial to manually install a complete Prometheus/Loki/Grafana stack.
 
-> These steps are aimed at rapid setup and teardown!  
+> These steps are aimed at rapid setup and teardown!
 > The deployments are neither highly available nor do they offer persistence 
 
 ## State Metrics
@@ -43,6 +43,14 @@ Next, we'll install Loki to store the Kubernetes logs:
 
 The ruler is activated to keep the installation simple, but no rules are defined.
 
+## Tempo
+
+Next, we'll install Tempo to store application traces:
+
+- `60-roles.yaml` has the service account and role bindings
+- `61-config.yaml` has the config maps with the ruler
+- `62-deployment.yaml` has the actual deployment
+
 ## Grafana
 
 Now that we have the data sources, we'll install Grafana for analysis:
@@ -50,8 +58,6 @@ Now that we have the data sources, we'll install Grafana for analysis:
 - `21-config.yaml` has the config maps for automatic provisioning
 - `21-dashboard.yaml` has the SUSE Rancher Home dashboard
 - `22-deployment.yaml` has the actual deployment
-
-Grafana 8 does not yet allow for automatic provisioning of notifiers for Unified Alerting; this is planned for Grafana 9 and tracked in Issue [#39510](https://github.com/grafana/grafana/discussions/39510).
 
 Unified alerting works fine, so we do not install Alertmanager anymore.
 

@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tempo
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tempo
+      app.kubernetes.io/instance: tempo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tempo
+        app.kubernetes.io/instance: tempo
+      annotations:
+        checksum/config: 37542c2acc87b254ecede846dbbc233c5204f698be13c3d9cd38061fd4b5c0fc
+    spec:
+      serviceAccountName: tempo
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - -config.file=/conf/tempo.yaml
+        - -mem-ballast-size-mbs=1024
+        image: grafana/tempo:latest
+        imagePullPolicy: IfNotPresent
+        name: tempo
+        ports:
+        - containerPort: 3100
+          name: prom-metrics
+        - containerPort: 6831
+          name: jaeger-thrift-c
+          protocol: UDP
+        - containerPort: 6832
+          name: jaeger-thrift-b
+          protocol: UDP
+        - containerPort: 14268
+          name: jaeger-thrift-h
+        - containerPort: 14250
+          name: jaeger-grpc
+        - containerPort: 9411
+          name: zipkin
+        - containerPort: 55680
+          name: otlp-legacy
+        - containerPort: 4317
+          name: otlp-grpc
+        - containerPort: 55681
+          name: otlp-httplegacy
+        - containerPort: 4318
+          name: otlp-http
+        - containerPort: 55678
+          name: opencensus
+        resources:
+          {}
+        env:
+        volumeMounts:
+        - mountPath: /conf
+          name: tempo-conf
+        - mountPath: /var/tempo
+          name: tempo-var
+      volumes:
+      - name: tempo-conf
+        configMap:
+          name: tempo
+      - name: tempo-var
+        emptyDir:
+          medium: Memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+spec:
+  type: ClusterIP
+  ports:
+  - name: tempo-prom-metrics
+    port: 3100
+    targetPort: 3100
+  - name: tempo-jaeger-thrift-compact
+    port: 6831
+    protocol: UDP
+    targetPort: 6831
+  - name: tempo-jaeger-thrift-binary
+    port: 6832
+    protocol: UDP
+    targetPort: 6832
+  - name: tempo-jaeger-thrift-http
+    port: 14268
+    protocol: TCP
+    targetPort: 14268
+  - name: grpc-tempo-jaeger
+    port: 14250
+    protocol: TCP
+    targetPort: 14250
+  - name: tempo-zipkin
+    port: 9411
+    protocol: TCP
+    targetPort: 9411
+  - name: tempo-otlp-legacy
+    port: 55680
+    protocol: TCP
+    targetPort: 55680
+  - name: tempo-otlp-http-legacy
+    port: 55681
+    protocol: TCP
+    targetPort: 4318
+  - name: grpc-tempo-otlp
+    port: 4317
+    protocol: TCP
+    targetPort: 4317
+  - name: tempo-otlp-http
+    port: 4318
+    protocol: TCP
+    targetPort: 4318
+  - name: tempo-opencensus
+    port: 55678
+    protocol: TCP
+    targetPort: 55678
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+

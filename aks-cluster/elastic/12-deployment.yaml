@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:8.7.0
+        image: docker.elastic.co/kibana/kibana:8.7.1
         env:
           - name: ELASTICSEARCH_HOSTS
             value: "http://elasticsearch.monitoring.svc:9200"

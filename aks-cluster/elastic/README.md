@@ -2,7 +2,7 @@
 
 Here is a quick setup for Elasticsearch and Kibana.
 
-> These steps are aimed at rapid setup and teardown!  
+> These steps are aimed at rapid setup and teardown!
 > The deployments are neither highly available nor do they offer persistence 
 
 ## Kube State Metrics
@@ -49,8 +49,9 @@ As an option, we will configure Rancher's logging operator:
 
 ## Navigation Link
 
-As a finishing touch, we will put navigation links to Kibana into the Rancher UI:
+As a finishing touch, we will put a navigation link to Kibana into the Rancher UI:
 
-- `99-navlink.yaml` has the navigation links
+- `99-navlink.yaml` has the navigation link
 
 Happy Ranching!
+

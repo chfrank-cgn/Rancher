@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otelmetrics
+  namespace: monitoring
+  labels:
+    app: otelmetrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otelmetrics
+  template:
+    metadata:
+      labels:
+        app: otelmetrics
+    spec:
+      serviceAccountName: otelmetrics
+      containers:
+      - name: otelmetrics
+        image: otel/opentelemetry-collector-contrib
+        args: ["--config", "/etc/config/config.yaml"]
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+        imagePullPolicy: IfNotPresent
+      volumes:
+        - name: config
+          configMap:
+            name: otelmetrics
+

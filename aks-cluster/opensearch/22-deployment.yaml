@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: data-prepper
+  name: data-prepper
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  ports:
+    - name: otel-metrics
+      port: 21891
+      targetPort: 21891
+    - name: api
+      port: 4900
+      targetPort: 4900
+  selector:
+    app: data-prepper
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: data-prepper
+  name: data-prepper
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-prepper
+  template:
+    metadata:
+      labels:
+        app: data-prepper
+    spec:
+      containers:
+        - image: opensearchproject/data-prepper
+          name: data-prepper
+          ports:
+            - containerPort: 21891
+          resources: {}
+          volumeMounts:
+            - name: prepper-configmap-config
+              mountPath: /usr/share/data-prepper/config/data-prepper-config.yaml
+              subPath: data-prepper-config.yaml
+            - name: prepper-configmap-pipelines
+              mountPath: /usr/share/data-prepper/pipelines/pipelines.yaml
+              subPath: pipelines.yaml
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+        - name: prepper-configmap-config
+          configMap:
+            name: data-prepper-config
+            items:
+              - key: data-prepper-config.yaml
+                path: data-prepper-config.yaml
+        - name: prepper-configmap-pipelines
+          configMap:
+            name: data-prepper-config
+            items:
+              - key: pipelines.yaml
+                path: pipelines.yaml
+

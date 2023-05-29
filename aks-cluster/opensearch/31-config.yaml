@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otelmetrics
+  namespace: monitoring
+  labels:
+    app: otelmetrics
+data:
+  config.yaml: |
+    receivers:
+      k8s_cluster:
+        collection_interval: 30s
+        node_conditions_to_report: [ "Ready", "MemoryPressure", "DiskPressure", "PIDPressure", "NetworkUnavailable" ]
+        allocatable_types_to_report: [ "cpu", "memory", "ephemeral-storage", "storage" ]
+        distribution: kubernetes
+    exporters:
+      otlp/data-prepper:
+        endpoint: data-prepper.monitoring.svc:21891
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        metrics:
+          receivers: [k8s_cluster]
+          exporters: [otlp/data-prepper]
+

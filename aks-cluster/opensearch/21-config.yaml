@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: data-prepper
+  name: data-prepper-config
+  namespace: monitoring
+data:
+  pipelines.yaml: |
+    otel-metrics-pipeline:
+      workers: 1
+      delay: 5000
+      source:
+        otel_metrics_source:
+          health_check_service: true
+          ssl: false
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 256 # max number of records the buffer drains after each read
+      processor:
+        - otel_metrics:
+            calculate_histogram_buckets: true
+            calculate_exponential_histogram_buckets: true
+            exponential_histogram_max_allowed_scale: 10
+            flatten_attributes: false
+      sink:
+        - opensearch:
+            hosts: ["http://opensearch.monitoring.svc:9200"]
+            index_type: custom
+            index: metrics-%{yyyy.MM.dd}
+            max_retries: 20
+            bulk_size: 4
+  data-prepper-config.yaml: |
+    ssl: false
+    circuit_breakers:
+      heap:
+        usage: 1gb
+        reset: 30s
+        check_interval: 5s
+

@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboards
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: opensearch-dashboards
+    app.kubernetes.io/instance: dashbords
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5601
+    protocol: TCP
+    name: http
+    targetPort: 5601
+  selector:
+    app: dashboards
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboards
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: opensearch-dashboards
+    app.kubernetes.io/instance: dashbords
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: dashboards
+  template:
+    metadata:
+      labels:
+        app: dashboards
+    spec:
+      containers:
+      - name: dashboards
+        image: "opensearchproject/opensearch-dashboards:2.7.0"
+        imagePullPolicy: "IfNotPresent"
+        readinessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          successThreshold: 1
+          tcpSocket:
+            port: 5601
+          timeoutSeconds: 5
+        livenessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          successThreshold: 1
+          tcpSocket:
+            port: 5601
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 20
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 5601
+          timeoutSeconds: 5
+        env:
+        - name: OPENSEARCH_HOSTS
+          value: "http://opensearch.monitoring.svc:9200"
+        - name: DISABLE_SECURITY_DASHBOARDS_PLUGIN
+          value: "true"
+        - name: SERVER_HOST
+          value: "0.0.0.0"
+        ports:
+        - containerPort: 5601
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512M
+          requests:
+            cpu: 100m
+            memory: 512M
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dashboards-ui
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: opensearch-dashboards
+    app.kubernetes.io/instance: dashbords
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+    - host: kibana.ingress.host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboards
+                port:
+                  number: 5601

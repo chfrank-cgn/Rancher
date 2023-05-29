@@ -61,7 +61,7 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-    - host: kibanacgn.ddns.net
+    - host: kibana.ingress.host
       http:
         paths:
           - pathType: Prefix

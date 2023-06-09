@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: opensearch
-        image: opensearchproject/opensearch:latest
+        image: opensearchproject/opensearch
         imagePullPolicy: IfNotPresent
         readinessProbe:
           failureThreshold: 3

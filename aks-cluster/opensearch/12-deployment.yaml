@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: dashboards
-        image: "opensearchproject/opensearch-dashboards:2.7.0"
+        image: opensearchproject/opensearch-dashboards
         imagePullPolicy: "IfNotPresent"
         readinessProbe:
           failureThreshold: 10

@@ -8,9 +8,14 @@ metadata:
 spec:
   type: ClusterIP
   ports:
+    - name: otel-traces
+      port: 21890
     - name: otel-metrics
       port: 21891
       targetPort: 21891
+    - name: otel-logs
+      port: 21892
+      targetPort: 21892
     - name: api
       port: 4900
       targetPort: 4900
@@ -38,7 +43,9 @@ spec:
         - image: opensearchproject/data-prepper
           name: data-prepper
           ports:
+            - containerPort: 21890
             - containerPort: 21891
+            - containerPort: 21892
           resources: {}
           volumeMounts:
             - name: prepper-configmap-config

@@ -13,14 +13,22 @@ data:
         node_conditions_to_report: [ "Ready", "MemoryPressure", "DiskPressure", "PIDPressure", "NetworkUnavailable" ]
         allocatable_types_to_report: [ "cpu", "memory", "ephemeral-storage", "storage" ]
         distribution: kubernetes
+      k8s_events:
     exporters:
-      otlp/data-prepper:
+      otlp/metrics:
         endpoint: data-prepper.monitoring.svc:21891
+        tls:
+          insecure: true
+      otlp/logs:
+        endpoint: data-prepper.monitoring.svc:21892
         tls:
           insecure: true
     service:
       pipelines:
         metrics:
           receivers: [k8s_cluster]
-          exporters: [otlp/data-prepper]
+          exporters: [otlp/metrics]
+        logs:
+          receivers: [k8s_events]
+          exporters: [otlp/logs]
 

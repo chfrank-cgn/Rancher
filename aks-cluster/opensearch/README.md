@@ -27,11 +27,18 @@ To enable an OpenTelemetry metrics endpoint, we'll install Data Prepper:
 
 ## OpenTelemetry Contributed Collector
 
-To collect Kubernetes metrics, we'll install the OpenTelemetry collector:
+To collect Kubernetes metrics and events, we'll install the contributed OpenTelemetry collector:
 
 - `30-roles.yaml` has the service account and role bindings
 - `31-config.yaml` has the configuration
 - `32-deployment.yaml` has the actual deployment
+
+## OpenTelemetry Collector
+
+To collect application traces, we'll install the regular OpenTelemetry collector:
+
+- `41-config.yaml` has the configuration
+- `42-deployment.yaml` has the actual deployment
 
 ## Syslog forwarding 
 

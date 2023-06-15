@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oteltraces
+  namespace: monitoring
+  labels:
+    app: oteltraces
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oteltraces
+  template:
+    metadata:
+      labels:
+        app: oteltraces
+    spec:
+      containers:
+      - name: oteltraces
+        image: otel/opentelemetry-collector
+        args: ["--config", "/etc/config/config.yaml"]
+        ports:
+        - containerPort: 4317
+        - containerPort: 4318
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+        imagePullPolicy: IfNotPresent
+      volumes:
+        - name: config
+          configMap:
+            name: oteltraces
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oteltraces
+  namespace: monitoring
+  labels:
+     app: oteltraces
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4317
+    protocol: TCP
+    name: otel-grpc
+    targetPort: 4317
+  - port: 4318
+    protocol: TCP
+    name: otel-http
+    targetPort: 4318
+  selector:
+    app: oteltraces
+

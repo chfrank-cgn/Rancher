@@ -31,6 +31,80 @@ data:
             index: metrics-%{yyyy.MM.dd}
             max_retries: 20
             bulk_size: 4
+    otel-logs-pipeline:
+      workers: 1
+      delay: 5000
+      source:
+        otel_logs_source:
+          health_check_service: true
+          ssl: false
+      processor:
+        - date:
+            from_time_received: true
+        - delete_entries:
+            with_keys: ["traceId","spanId","flags","time","observedTime","schemaUrl"]
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 256 # max number of records the buffer drains after each read
+      sink:
+        - opensearch:
+            hosts: ["http://opensearch.monitoring.svc:9200"]
+            index_type: custom
+            index: events-%{yyyy.MM.dd}
+            max_retries: 20
+    otel-trace-pipeline:
+      workers: 1
+      delay: 5000
+      source:
+        otel_trace_source:
+          ssl: false
+          authentication:
+            unauthenticated:
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 256 # max number of records the buffer drains after each read
+      sink:
+        - pipeline:
+            name: "otel-raw-pipeline"
+        - pipeline:
+            name: "otel-servicemap-pipeline"
+    otel-raw-pipeline:
+      source:
+        pipeline:
+          name: "otel-trace-pipeline"
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 256 # max number of records the buffer drains after each read
+      processor:
+        - otel_traces:
+        - otel_trace_group:
+            hosts: ["http://opensearch.monitoring.svc:9200"]
+      sink:
+        - opensearch:
+            hosts: ["http://opensearch.monitoring.svc:9200"]
+            index_type: trace-analytics-raw
+            max_retries: 20
+            bulk_size: 4
+    otel-servicemap-pipeline:
+      source:
+        pipeline:
+          name: "otel-trace-pipeline"
+      buffer:
+        bounded_blocking:
+          buffer_size: 1024 # max number of records the buffer accepts
+          batch_size: 256 # max number of records the buffer drains after each read
+      processor:
+        - service_map_stateful:
+            window_duration: 180
+      sink:
+        - opensearch:
+            hosts: ["http://opensearch.monitoring.svc:9200"]
+            index_type: trace-analytics-service-map
+            max_retries: 20
+            bulk_size: 4
   data-prepper-config.yaml: |
     ssl: false
     circuit_breakers:

@@ -22,12 +22,12 @@ variable "az-region" {
 
 # Logging chart
 variable "logchart" {
-        default = "102.0.0"
+        default = "102.0.1"
 }
 
 # OPA chart
 variable "opachart" {
-        default = "102.0.0"
+        default = "102.1.0"
 }
 
 # Bitnami URL

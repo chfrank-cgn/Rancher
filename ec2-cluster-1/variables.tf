@@ -12,17 +12,17 @@ variable "disksize" {
 
 # Node type
 variable "type" {
-	default = "m5a.xlarge"
+	default = "m6a.xlarge"
 }
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.25.9-rancher2-1"
+	default = "v1.26.4-rancher2-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/20.10.sh"
+	default = "https://releases.rancher.com/install-docker/23.0.sh"
 }
 
 # Number of nodes
@@ -32,17 +32,17 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "102.0.0"
+	default = "102.0.1"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "102.0.0"
+	default = "102.0.1"
 }
 
 # Longhorn chart
 variable "longchart" {
-	default = "102.2.0"
+	default = "102.2.1"
 }
 
 # Bitnami URL
@@ -57,12 +57,12 @@ variable "ec2-region" {
 
 # EC2 Availability Zone
 variable "ec2-zone" {
-	default = "a"
+	default = "b"
 }
 
 # EC2 Subnet
 variable "ec2-subnet" {
-	default = "subnet-f512b39f"
+	default = "subnet-253d2258"
 }
 
 # EC2 VPC

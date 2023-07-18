@@ -387,6 +387,22 @@ resource "rancher2_app_v2" "gatekeeper_az" {
   depends_on = [rancher2_app_v2.syslog_az,kubernetes_deployment.cattle_cluster_agent]
 }
 
+# CIS Benchmarks
+resource "rancher2_app_v2" "cisbench_az" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "rancher-cis-benchmark"
+  namespace = "cis-operator-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "rancher-cis-benchmark"
+  chart_version = var.cischart
+
+  depends_on = [rancher2_app_v2.gatekeeper_az,kubernetes_deployment.cattle_cluster_agent]
+}
+
 # Bitnami Catalog
 resource "rancher2_catalog_v2" "bitnami_az" {
   lifecycle {
@@ -396,7 +412,7 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.gatekeeper_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_app_v2.cisbench_az,kubernetes_deployment.cattle_cluster_agent]
 }
 
 # Namespace cleanup

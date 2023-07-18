@@ -30,6 +30,11 @@ variable "opachart" {
         default = "102.1.0"
 }
 
+# CIS Benchmarks chart
+variable "cischart" {
+        default = "4.1.0"
+}
+
 # Bitnami URL
 variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"

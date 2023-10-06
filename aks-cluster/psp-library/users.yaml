@@ -259,6 +259,15 @@ spec:
         input_containers[c] {
             c := input.review.object.spec.ephemeralContainers[_]
         }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.containers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.initContainers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.ephemeralContainers[_]
+        }
       libs:
         - |
           package lib.exempt_container

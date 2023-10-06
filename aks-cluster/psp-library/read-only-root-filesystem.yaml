@@ -65,6 +65,15 @@ spec:
         input_containers[c] {
             c := input.review.object.spec.ephemeralContainers[_]
         }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.containers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.initContainers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.template.spec.ephemeralContainers[_]
+        }
 
         # has_field returns whether an object has a field
         has_field(object, field) = true {

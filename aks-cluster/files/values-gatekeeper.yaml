@@ -1,3 +1,6 @@
-replicas: 2
+emitAdmissionEvents: true
+emitAuditEvents: true
+logDenies: true
 psp.enabled: false
+replicas: 2
 

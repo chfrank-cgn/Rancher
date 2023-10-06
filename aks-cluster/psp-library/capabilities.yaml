@@ -66,6 +66,19 @@ spec:
           msg := sprintf("container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])
         }
 
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          not is_exempt(container)
+          has_disallowed_capabilities(container)
+          msg := sprintf("container <%v> has a disallowed capability. Allowed capabilities are %v", [container.name, get_default(input.parameters, "allowedCapabilities", "NONE")])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          not is_exempt(container)
+          missing_drop_capabilities(container)
+          msg := sprintf("container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])
+        }
 
 
         violation[{"msg": msg}] {
@@ -82,6 +95,19 @@ spec:
           msg := sprintf("init container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])
         }
 
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.initContainers[_]
+          not is_exempt(container)
+          has_disallowed_capabilities(container)
+          msg := sprintf("init container <%v> has a disallowed capability. Allowed capabilities are %v", [container.name, get_default(input.parameters, "allowedCapabilities", "NONE")])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.initContainers[_]
+          not is_exempt(container)
+          missing_drop_capabilities(container)
+          msg := sprintf("init container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])
+        }
 
 
         violation[{"msg": msg}] {
@@ -93,6 +119,20 @@ spec:
 
         violation[{"msg": msg}] {
           container := input.review.object.spec.ephemeralContainers[_]
+          not is_exempt(container)
+          missing_drop_capabilities(container)
+          msg := sprintf("ephemeral container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.ephemeralContainers[_]
+          not is_exempt(container)
+          has_disallowed_capabilities(container)
+          msg := sprintf("ephemeral container <%v> has a disallowed capability. Allowed capabilities are %v", [container.name, get_default(input.parameters, "allowedCapabilities", "NONE")])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.ephemeralContainers[_]
           not is_exempt(container)
           missing_drop_capabilities(container)
           msg := sprintf("ephemeral container <%v> is not dropping all required capabilities. Container must drop all of %v or \"ALL\"", [container.name, input.parameters.requiredDropCapabilities])

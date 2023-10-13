@@ -136,5 +136,6 @@ spec:
             defaultMode: 420
             name: loki-server-conf
         - name: storage
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
 

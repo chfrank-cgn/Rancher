@@ -42,7 +42,8 @@ spec:
             defaultMode: 420
             name: prometheus-server-conf
         - name: prometheus-storage-volume
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
 ---
 apiVersion: v1
 kind: Service

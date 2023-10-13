@@ -1,6 +1,14 @@
+audit:
+  writeToRAMDisk: true
+controllerManager:
+  affinity: {}
 emitAdmissionEvents: true
 emitAuditEvents: true
 logDenies: true
+podAnnotations:
+  prometheus.io/scrape: 'true'
+  prometheus.io/path: '/metrics'
+  prometheus.io/port: '8888'
 psp.enabled: false
 replicas: 2
 

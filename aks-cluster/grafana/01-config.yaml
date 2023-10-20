@@ -108,4 +108,8 @@ data:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: pod
+      - job_name: prometheus
+        static_configs:
+          - targets:
+            - prometheus-service.monitoring.svc:8081 # prometheus endpoint address
 

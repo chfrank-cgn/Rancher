@@ -19,6 +19,9 @@ spec:
         app.kubernetes.io/instance: tempo
       annotations:
         checksum/config: 37542c2acc87b254ecede846dbbc233c5204f698be13c3d9cd38061fd4b5c0fc
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: '3100'
     spec:
       serviceAccountName: tempo
       automountServiceAccountToken: true

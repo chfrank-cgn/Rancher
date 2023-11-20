@@ -20,6 +20,11 @@ variable "az-region" {
 	default = "eastus"
 }
 
+# Kubernetes version
+variable "k8version" {
+	default = "1.26"
+}
+
 # Logging chart
 variable "logchart" {
         default = "102.0.1"

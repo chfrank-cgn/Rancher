@@ -10,6 +10,7 @@ resource "azurerm_kubernetes_cluster" "cluster_az" {
   name                = "aks-${random_id.instance_id.hex}"
   location            = var.az-region
   resource_group_name = var.az-resource-group
+  kubernetes_version  = var.k8version
   dns_prefix          = "aks-${random_id.instance_id.hex}"
 
   # annotations:

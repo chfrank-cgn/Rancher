@@ -22,22 +22,22 @@ variable "az-region" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.26"
+	default = "1.27"
 }
 
 # Logging chart
 variable "logchart" {
-        default = "102.0.1"
+        default = "103.0.0"
 }
 
 # OPA chart
 variable "opachart" {
-        default = "102.1.0"
+        default = "103.1.0"
 }
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "4.2.0"
+        default = "5.0.0"
 }
 
 # Bitnami URL
@@ -57,7 +57,7 @@ variable "bitnami-url" {
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {
-	default = 570
+	default = 630
 }
 
 variable "rancher-url" { }

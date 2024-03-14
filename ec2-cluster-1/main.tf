@@ -42,14 +42,6 @@ resource "rancher2_cluster" "cluster_ec2" {
 
   rke_config {
     kubernetes_version = var.k8version
-    cloud_provider {
-      name = "aws"
-      aws_cloud_provider {
-        global {
-          kubernetes_cluster_tag = "rancher"
-        }
-      }
-    }
     ignore_docker_version = false
     network {
       plugin = "flannel"

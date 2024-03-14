@@ -17,12 +17,12 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.26.13-rancher1-1"
+	default = "v1.27.11-rancher1-1"
 }
 
 # Docker version
 variable "dockerurl" {
-	default = "https://releases.rancher.com/install-docker/23.0.sh"
+	default = "https://releases.rancher.com/install-docker/24.0.sh"
 }
 
 # Number of nodes
@@ -42,7 +42,7 @@ variable "logchart" {
 
 # Longhorn chart
 variable "longchart" {
-	default = "103.2.1"
+	default = "103.2.2"
 }
 
 # Bitnami URL

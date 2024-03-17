@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:8.10.2
+        image: docker.elastic.co/kibana/kibana:8.12.2
         env:
           - name: ELASTICSEARCH_HOSTS
             value: "http://elasticsearch.monitoring.svc:9200"
@@ -57,9 +57,8 @@ kind: Ingress
 metadata:
   name: kibana-ui
   namespace: monitoring
-  annotations:
-    kubernetes.io/ingress.class: addon-http-application-routing
 spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
     - host: kibana.ingress.host
       http:

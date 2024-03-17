@@ -80,9 +80,8 @@ kind: Ingress
 metadata:
   name: grafana-ui
   namespace: monitoring
-  annotations:
-    kubernetes.io/ingress.class: addon-http-application-routing
 spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
     - host: grafana.ingress.host
       http:

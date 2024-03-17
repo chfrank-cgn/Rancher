@@ -13,9 +13,11 @@ resource "azurerm_kubernetes_cluster" "cluster_az" {
   kubernetes_version  = var.k8version
   dns_prefix          = "aks-${random_id.instance_id.hex}"
 
-  # annotations:
-  #   kubernetes.io/ingress.class: addon-http-application-routing
-  http_application_routing_enabled = true
+  # spec:
+  #  ingressClassName: webapprouting.kubernetes.azure.com
+  web_app_routing {
+    dns_zone_id = ""
+  }
 
   default_node_pool {
     name       = "agent${random_id.instance_id.hex}"

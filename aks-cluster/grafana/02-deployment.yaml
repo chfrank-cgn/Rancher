@@ -63,9 +63,8 @@ kind: Ingress
 metadata:
   name: prometheus-ui
   namespace: monitoring
-  annotations:
-    kubernetes.io/ingress.class: addon-http-application-routing
 spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
     - host: prometheus.ingress.host
       http:

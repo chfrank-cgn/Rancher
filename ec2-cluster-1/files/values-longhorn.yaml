@@ -1,3 +1,5 @@
 defaultSettings:
   deletingConfirmationFlag: true
+  backupTarget: "nfs://longhorn-nfs-svc.longhorn-system.svc:/opt/backupstore"
+  concurrentAutomaticEngineUpgradePerNodeLimit: 1
 

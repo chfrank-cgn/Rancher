@@ -4,12 +4,6 @@ Even on AWS EC2, it can make a lot of sense to create an unmanaged Kubernetes cl
 
 [Rancher](https://rancher.com/) offers node and cluster drivers for Amazon EC2. Here we'll be using the Rancher node driver through [Terraform](https://www.terraform.io/) to create the cluster and set up a [node pool](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/) for it.
 
-## Cloud Provider
-
-Unlike other cloud providers, the in-tree AWS provider does not use a separate set of credentials but relies on IAM instance profiles assigned to the nodes; for details on the IAM policies, have a look at Rancher's [provider documentation](https://rancher.com/docs/rke/latest/en/config-options/cloud-providers/aws/).
-
-All resources that should be accessible to the cloud provider need to be tagged with a unique tag in the form of "kubernetes.io/cluster/cluster-id". In the example below, I opted for a fixed value of "rancher" as I manage some resources (VPCs and subnets) outside of Terraform.
-
 ## Terraform Provider
 
 I'm assuming that you have set up Terraform already. As a first step, we need to define the [Rancher2 provider](https://www.terraform.io/docs/providers/rancher2/index.html):
@@ -182,38 +176,17 @@ For the new v2 app resources, it can be beneficial to add a dependency to the co
 
 Never run a Kubernetes cluster without monitoring or logging!
 
+## Storage 
+
+For Storage we will be using Longhorn.
+
 ## Validation
 
 To validate a successful build, I deploy the "Hello World" of Kubernetes, a WordPress instance, from the Bitnami catalog.
-
-## Load Balancer
-
-If you've set up the IAM permissions correctly and tagged all resources, including VPC, the creation of an Amazon ELB from Helm should work right away.
-
-## Storage Class
-
-To use Amazon EBS as storage, we'll need to define a storage class:
-
-```
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ebs
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubernetes.io/aws-ebs
-reclaimPolicy: Delete
-parameters:
-  type: gp2
-volumeBindingMode: WaitForFirstConsumer
-```
-
-The option WaitForConsumer will help with zonal assignment.
 
 ## Troubleshooting
 
 The best place for troubleshooting during plan execution is the output of the pod running Rancher - it provides detailed information on what Rancher is currently doing and complete error messages if something goes wrong.
 
-You can find sample a sample IAM policy in the json subdirectory.
-
 Happy Ranching!
+

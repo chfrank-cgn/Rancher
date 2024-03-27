@@ -34,6 +34,12 @@ To get metrics from Longhorn, we can enable monitoring:
 - `22-deployment.yaml` has a small NFS service for backup
 - `23-monitor.yaml` has the service monitor
 
+## Prometheus self-monitoring
+
+To get metrics from Prometheus itself, we enable monitoring:
+
+- `43-monitor.yaml` has the service monitor
+
 ## Syslog forwarding 
 
 To forward the system and pod logs to Grafana Cloud, we will need to configure Rancher's logging operator:

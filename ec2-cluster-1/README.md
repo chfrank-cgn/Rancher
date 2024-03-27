@@ -67,8 +67,6 @@ resource "rancher2_node_template" "template_ec2" {
 }
 ```
 
-Note: Here's where you set the IAM policy and define the resource tag
-
 ### Variables
 
 I define most values, such as the Kubernetes version to use, the Amazon Machine Image, or the number of nodes, as variables to make overall plan maintenance easier:
@@ -97,14 +95,6 @@ resource "rancher2_cluster" "cluster_ec2" {
 
   rke_config {
     kubernetes_version = var.k8version
-    cloud_provider {
-      name = "aws"
-      aws_cloud_provider {
-        global {
-          kubernetes_cluster_tag = "rancher"
-        }
-      }
-    }
     ignore_docker_version = false
     network {
       plugin = "flannel"
@@ -112,8 +102,6 @@ resource "rancher2_cluster" "cluster_ec2" {
   }
 }
 ```
-
-Note: Again, here we are defining the resource tag - there is no correct value; it just needs to be consistent across all areas to enable the new Kubernetes cluster to provisiosn AWS resources.
 
 ### Node pool
 

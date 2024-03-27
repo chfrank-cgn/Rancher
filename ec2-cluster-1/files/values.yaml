@@ -20,7 +20,7 @@ prometheus:
     retention: 1d
     scrapeInterval: 1m
   serviceMonitor:
-    selfMonitor: false
+    selfMonitor: true
 rkeEtcd:
   enabled: true
 

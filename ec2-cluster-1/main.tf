@@ -28,7 +28,6 @@ resource "rancher2_node_template" "template_ec2" {
     zone = var.ec2-zone
     root_size = var.disksize
     instance_type = var.type
-    iam_instance_profile = "rancher-combined-control-worker"
     tags = "kubernetes.io/cluster/rancher,owned"
   }
 

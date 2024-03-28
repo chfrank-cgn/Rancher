@@ -32,12 +32,12 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "103.0.3"
+	default = "103.0.4"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "103.0.0"
+	default = "103.0.1"
 }
 
 # Longhorn chart

@@ -27,10 +27,11 @@ For cost analysis, we will then install kubecost:
 - `12-deployment.yaml` has the actual deployment
 - `13-monitor.yaml` has the service monitor
 
-## Longhorn
+## Longhorn backup
 
-To get metrics from Longhorn, we have enabled monitoring in the deployment:
+To allow backups from Longhorn, we configure a backup target:
 
+- `files/values-longhorn.yaml` has the configuration
 - `22-deployment.yaml` has a small NFS service for backup
 
 ## Syslog forwarding 

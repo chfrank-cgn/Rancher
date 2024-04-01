@@ -88,7 +88,7 @@ spec:
           emptyDir: {}
       initContainers:
       containers:
-        - image: gcr.io/kubecost1/cost-model:prod-1.106.1
+        - image: gcr.io/kubecost1/cost-model:prod-1.108.1
           name: cost-model
           imagePullPolicy: Always
           resources:
@@ -210,7 +210,7 @@ spec:
                 configMapKeyRef:
                   name: kubecost-cost-analyzer
                   key: kubecost-token
-        - image: gcr.io/kubecost1/frontend:prod-1.106.1
+        - image: gcr.io/kubecost1/frontend:prod-1.108.1
           env:
             - name: GET_HOSTS_FROM
               value: dns
@@ -262,7 +262,7 @@ spec:
           emptyDir: {}
       initContainers:
       containers:
-        - image: gcr.io/kubecost1/cost-model:prod-1.106.1
+        - image: gcr.io/kubecost1/cost-model:prod-1.108.1
           imagePullPolicy: Always
           name: kubecost-metrics
           resources:

@@ -28,6 +28,7 @@ resource "rancher2_node_template" "template_ec2" {
     zone = var.ec2-zone
     root_size = var.disksize
     instance_type = var.type
+    iam_instance_profile = "rancher-combined-control-worker"
     tags = "kubernetes.io/cluster/rancher,owned"
   }
 
@@ -118,23 +119,6 @@ resource "rancher2_app_v2" "syslog_ec2" {
   depends_on = [local_file.kubeconfig,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
-# Longhorn
-resource "rancher2_app_v2" "longhorn_ec2" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster.cluster_ec2.id
-  name = "longhorn"
-  namespace = "longhorn-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "longhorn"
-  chart_version = var.longchart
-  values = templatefile("${path.module}/files/values-longhorn.yaml", {})
-
-  depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
-}
-
 # Monitoring namespace
 resource "rancher2_namespace" "promns_ec2" {
   lifecycle {
@@ -144,7 +128,7 @@ resource "rancher2_namespace" "promns_ec2" {
   project_id = data.rancher2_project.system.id
   description = "Terraform"
 
-  depends_on = [rancher2_app_v2.longhorn_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_app_v2.syslog_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
 # Prometheus secret
@@ -181,6 +165,23 @@ resource "rancher2_app_v2" "monitor_ec2" {
   depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
+# Longhorn
+resource "rancher2_app_v2" "longhorn_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "longhorn"
+  namespace = "longhorn-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "longhorn"
+  chart_version = var.longchart
+  values = templatefile("${path.module}/files/values-longhorn.yaml", {})
+
+  depends_on = [rancher2_app_v2.monitor_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
 # Bitnami Catalog
 resource "rancher2_catalog_v2" "bitnami" {
   lifecycle {
@@ -190,6 +191,6 @@ resource "rancher2_catalog_v2" "bitnami" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_secret_v2.promsecret_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_app_v2.longhorn_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 

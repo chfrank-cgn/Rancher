@@ -22,7 +22,7 @@ variable "az-region" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.27"
+	default = "1.28"
 }
 
 # Logging chart

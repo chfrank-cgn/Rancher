@@ -27,13 +27,6 @@ For cost analysis, we will then install kubecost:
 - `12-deployment.yaml` has the actual deployment
 - `13-monitor.yaml` has the service monitor
 
-## Longhorn backup
-
-To allow backups from Longhorn, we configure a backup target:
-
-- `files/values-longhorn.yaml` has the configuration
-- `22-deployment.yaml` has a small NFS service for backup
-
 ## OPA Gatekeeper metrics
 
 To collect metrics from OPA Gatekeeper, we will deploy a service and a service monitor:
@@ -61,6 +54,13 @@ To forward the system and pod logs to Grafana Cloud, we will need to configure R
 As a finishing touch, we will put a navigation link to our Grafana Cloud tenant into the Rancher UI:
 
 - `99-navlink.yaml` has the navigation link
+
+## Longhorn backup
+
+Finally, to allow backups from Longhorn, we install and configure a backup target:
+
+- `files/values-longhorn.yaml` has the configuration
+- `22-deployment.yaml` has a small NFS service for backup
 
 Happy Ranching!
 

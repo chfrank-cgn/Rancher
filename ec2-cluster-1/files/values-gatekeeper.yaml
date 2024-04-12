@@ -1,0 +1,4 @@
+emitAdmissionEvents: true
+emitAuditEvents: true
+logDenies: true
+

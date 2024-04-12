@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rancher-monitoring-gatekeeper
+  namespace: cattle-gatekeeper-system
+  labels:
+    app: rancher-monitoring-gatekeeper
+    release: rancher-monitoring
+spec:
+  selector:
+    matchLabels:
+      app: rancher-gatekeeper
+  namespaceSelector:
+    matchNames:
+      - cattle-gatekeeper-system
+  endpoints:
+    - port: metrics
+

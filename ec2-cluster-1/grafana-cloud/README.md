@@ -34,6 +34,22 @@ To allow backups from Longhorn, we configure a backup target:
 - `files/values-longhorn.yaml` has the configuration
 - `22-deployment.yaml` has a small NFS service for backup
 
+## OPA Gatekeeper metrics
+
+To collect metrics from OPA Gatekeeper, we will deploy a service and a service monitor:
+
+- `32-deployment.yaml` has the service
+- `33-monitor.yaml` has the service monitor
+
+## Network Observability
+
+To monitor the cluster network, we will install Retina from Microsoft:
+
+- `40-roles.yaml` has the service account and role bindings
+- `41-config.yaml` has the config map
+- `42-deployment.yaml` has the daemonset
+- `43-monitor.yaml` has the service monitor
+
 ## Syslog forwarding 
 
 To forward the system and pod logs to Grafana Cloud, we will need to configure Rancher's logging operator:

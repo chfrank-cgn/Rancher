@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: retina-prometheus-servicemonitor
+  namespace: retina-system
+  labels:
+    app: retina
+spec:
+  selector:
+    matchLabels:
+      app: retina
+  namespaceSelector:
+    matchNames:
+      - retina-system
+  endpoints:
+    - targetPort: 10093
+

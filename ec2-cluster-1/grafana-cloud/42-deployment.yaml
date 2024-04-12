@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: retina-agent
+  namespace: retina-system
+  labels:
+    k8s-app: retina
+spec:
+  selector:
+    matchLabels:
+      app: retina
+  template:
+    metadata:
+      labels:
+        app: retina
+        k8s-app: retina
+    spec:
+      hostNetwork: true
+      serviceAccountName: retina-agent
+      initContainers:
+        - name: init-retina
+          image: ghcr.io/microsoft/retina/retina-init:v0.0.5
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: bpf
+            mountPath: /sys/fs/bpf
+            mountPropagation: Bidirectional
+      containers:
+        - name: retina 
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 10093
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          image: ghcr.io/microsoft/retina/retina-agent:v0.0.5
+          imagePullPolicy: IfNotPresent
+          command:
+          - /retina/controller
+          args:
+          - --health-probe-bind-address=:18081
+          - --metrics-bind-address=:18080
+          - "--config"
+          - "/retina/config/config.yaml"
+          ports:
+          - name: retina
+            containerPort: 10093
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "500m"
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: NODE_NAME
+            valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          - name: NODE_IP
+            valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+          securityContext:
+            capabilities:
+              add:
+              - SYS_ADMIN
+              - SYS_RESOURCE
+              - NET_ADMIN
+              - IPC_LOCK
+            privileged: false
+          volumeMounts:
+            - name: bpf
+              mountPath: /sys/fs/bpf
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+            - name: config
+              mountPath: /retina/config
+            - name: debug
+              mountPath: /sys/kernel/debug
+            - name: tmp
+              mountPath: /tmp
+            - name: trace
+              mountPath: /sys/kernel/tracing
+      volumes:
+      - name: bpf
+        hostPath:
+          path: /sys/fs/bpf
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+      - name: config
+        configMap:
+          name: retina-config
+      - name: debug
+        hostPath:
+          path: /sys/kernel/debug
+      - name: tmp
+        emptyDir:
+          medium: Memory
+      - name: trace
+        hostPath:
+          path: /sys/kernel/tracing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: retina-svc
+  namespace: retina-system
+  labels:
+    app: retina
+spec:
+  ports:
+    - port: 10093
+      targetPort: 10093
+  selector:
+    app: retina
+  type: ClusterIP
+

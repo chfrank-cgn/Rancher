@@ -182,6 +182,23 @@ resource "rancher2_app_v2" "longhorn_ec2" {
   depends_on = [rancher2_app_v2.monitor_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 
+# OPA Gatekeeper
+resource "rancher2_app_v2" "gatekeeper_ec2" {
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_ec2.id
+  name = "rancher-gatekeeper"
+  namespace = "gatekeeper-system"
+  project_id = data.rancher2_project.system.id
+  repo_name = "rancher-charts"
+  chart_name = "rancher-gatekeeper"
+  chart_version = var.opachart
+  values = templatefile("${path.module}/files/values-gatekeeper.yaml", {})
+
+  depends_on = [rancher2_app_v2.longhorn_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+}
+
 # Bitnami Catalog
 resource "rancher2_catalog_v2" "bitnami" {
   lifecycle {
@@ -191,6 +208,6 @@ resource "rancher2_catalog_v2" "bitnami" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.longhorn_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
+  depends_on = [rancher2_app_v2.gatekeeper_ec2,rancher2_cluster.cluster_ec2,rancher2_node_pool.nodepool_ec2]
 }
 

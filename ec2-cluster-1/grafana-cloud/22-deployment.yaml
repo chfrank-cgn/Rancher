@@ -13,7 +13,7 @@ spec:
   containers:
   - name: longhorn-nfs-container
     image: longhornio/nfs-ganesha:latest
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     env:
     - name: EXPORT_ID
       value: "14"

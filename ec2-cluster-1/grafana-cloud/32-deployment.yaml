@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rancher-gatekeeper
+  name: gatekeeper-monitoring-service
+  namespace: cattle-gatekeeper-system
+spec:
+  ports:
+  - port: 8888
+    name: metrics
+  selector:
+    app: rancher-gatekeeper
+  type: ClusterIP
+

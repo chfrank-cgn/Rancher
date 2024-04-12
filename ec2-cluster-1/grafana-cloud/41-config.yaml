@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: retina-config
+  namespace: retina-system
+data:
+  config.yaml: |-
+    apiServer:
+      host: 0.0.0.0
+      port: 10093
+    logLevel: info
+    enabledPlugin: ["dropreason","packetforward","dns"]
+    metricsInterval: 10
+    enableTelemetry: false
+    enablePodLevel: false
+    remoteContext: false
+    enableAnnotations: false
+

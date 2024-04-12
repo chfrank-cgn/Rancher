@@ -90,7 +90,7 @@ spec:
       containers:
         - image: gcr.io/kubecost1/cost-model:prod-1.108.1
           name: cost-model
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu: 200m
@@ -222,7 +222,7 @@ spec:
             requests:
               cpu: 10m
               memory: 55Mi
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           readinessProbe:
             httpGet:
               path: /healthz
@@ -263,7 +263,7 @@ spec:
       initContainers:
       containers:
         - image: gcr.io/kubecost1/cost-model:prod-1.108.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           name: kubecost-metrics
           resources:
             {}

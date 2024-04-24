@@ -369,6 +369,7 @@ resource "rancher2_app_v2" "syslog_az" {
   repo_name = "rancher-charts"
   chart_name = "rancher-logging"
   chart_version = var.logchart
+  values = templatefile("${path.module}/files/values-logging.yaml", {})
 
   depends_on = [local_file.kubeconfig,kubernetes_deployment.cattle_cluster_agent,rancher2_cluster.cluster_az,azurerm_kubernetes_cluster.cluster_az]
 }

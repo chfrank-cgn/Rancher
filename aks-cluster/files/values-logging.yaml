@@ -1,0 +1,4 @@
+additionalLoggingSources:
+  aks:
+    enabled: true
+

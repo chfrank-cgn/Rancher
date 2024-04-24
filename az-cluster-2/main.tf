@@ -23,32 +23,7 @@ resource "rancher2_cluster_v2" "cluster_az" {
     }
     machine_global_config = <<EOF
 cni: canal
-kube-controller-manager-arg:
-  - '--configure-cloud-routes=false'
 EOF
-    machine_selector_config {
-      config = {
-        cloud-provider-config = <<EOF
-{ 
-  "cloud": "AzurePublicCloud",
-  "aadClientId": "${var.az-client-id}",
-  "aadClientSecret": "${var.az-client-secret}",
-  "subscriptionId": "${var.az-subscription-id}",
-  "tenantId": "${var.az-tenant-id}",
-  "resourceGroup": "${var.az-resource-group}",
-  "location": "${var.az-region}",
-  "subnetName": "${var.az-subnet}",
-  "vnetName": "${var.az-vnet}",
-  "securityGroupName": "${var.az-sec-group}",
-  "primaryAvailabilitySetName": "${var.az-avset}",
-  "cloudProviderBackoff": false,
-  "useManagedIdentityExtension": false,
-  "useInstanceMetadata": true
-}
-EOF
-        cloud-provider-name = "azure"
-      }
-    }
   }
 }
 
@@ -100,8 +75,8 @@ resource "azurerm_linux_virtual_machine" "vm_az" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer = "0001-com-ubuntu-server-focal"
-    sku = "20_04-lts"
+    offer = "0001-com-ubuntu-server-jammy"
+    sku = "22_04-lts"
     version = "latest"
   }
 

@@ -2,7 +2,7 @@
 
 # Node image
 variable "image" { 
-	default = "Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest"
+	default = "Canonical:0001-com-ubuntu-server-jammy:22_04-lts:latest"
 }
 
 # Node disk size in GB
@@ -27,7 +27,7 @@ variable "control-type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.25.9+rke2r1"
+	default = "v1.28.8+rke2r1"
 }
 
 # Number of nodes
@@ -42,17 +42,17 @@ variable "numagent" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "102.0.0"
+	default = "103.0.4"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "102.0.0"
+	default = "103.1.0"
 }
 
 # Longhorn chart
 variable "longchart" {
-	default = "102.2.0"
+	default = "103.3.0"
 }
 
 # Bitnami URL

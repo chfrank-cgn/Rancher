@@ -1,6 +1,6 @@
 #!/bin/sh
 apt-get update
-apt-get install -y apt-transport-https jq software-properties-common
+apt-get install -y apt-transport-https jq software-properties-common net-tools
 sleep 15
 ${registration_command}
 exit 0

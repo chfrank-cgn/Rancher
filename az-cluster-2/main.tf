@@ -22,7 +22,7 @@ resource "rancher2_cluster_v2" "cluster_az" {
       disable_snapshots = true
     }
     machine_global_config = <<EOF
-cni: canal
+cni: flannel
 EOF
   }
 }
@@ -114,23 +114,6 @@ resource "local_file" "kubeconfig" {
   depends_on = [null_resource.delay]
 }
 
-# Cluster monitoring
-resource "rancher2_app_v2" "monitor_az" {
-  lifecycle {
-    ignore_changes = all
-  }
-  cluster_id = rancher2_cluster_v2.cluster_az.cluster_v1_id
-  name = "rancher-monitoring"
-  namespace = "cattle-monitoring-system"
-  project_id = data.rancher2_project.system.id
-  repo_name = "rancher-charts"
-  chart_name = "rancher-monitoring"
-  chart_version = var.monchart
-  values = templatefile("${path.module}/files/values.yaml", {})
-
-  depends_on = [local_file.kubeconfig,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
-}
-
 # Cluster logging
 resource "rancher2_app_v2" "syslog_az" {
   lifecycle {
@@ -145,7 +128,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
-  depends_on = [rancher2_app_v2.monitor_az,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
+  depends_on = [local_file.kubeconfig,rancher2_cluster_v2.cluster_az,azurerm_linux_virtual_machine.vm_az]
 }
 
 # Bitnami Catalog

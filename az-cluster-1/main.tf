@@ -87,9 +87,6 @@ resource "rancher2_cluster_v2" "cluster_az" {
     machine_global_config = <<EOF
 cni: canal
 EOF
-    etcd {
-      disable_snapshots = true
-    }
   }
 
   depends_on = [rancher2_cloud_credential.credential_az]

@@ -15,11 +15,6 @@ variable "numnodes" {
 	default = 3
 }
 
-# Monitoring chart
-variable "monchart" {
-	default = "103.0.4"
-}
-
 # Logging chart
 variable "logchart" {
 	default = "103.0.1"

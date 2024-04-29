@@ -1,5 +1,9 @@
 defaultSettings:
+  allowCollectingLonghornUsageMetrics: true
   deletingConfirmationFlag: true
-persistence:
-  defaultClassReplicaCount: 2
+  backupTarget: "nfs://longhorn-nfs-svc.longhorn-system.svc:/opt/backupstore"
+  concurrentAutomaticEngineUpgradePerNodeLimit: 1
+metrics:
+  serviceMonitor:
+    enabled: true
 

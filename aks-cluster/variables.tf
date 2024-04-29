@@ -27,7 +27,7 @@ variable "k8version" {
 
 # Logging chart
 variable "logchart" {
-        default = "103.0.1"
+        default = "103.1.0"
 }
 
 # OPA chart

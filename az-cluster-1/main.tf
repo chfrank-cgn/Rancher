@@ -85,7 +85,7 @@ resource "rancher2_cluster_v2" "cluster_az" {
       }
     }
     machine_global_config = <<EOF
-cni: canal
+cni: flannel
 EOF
   }
 

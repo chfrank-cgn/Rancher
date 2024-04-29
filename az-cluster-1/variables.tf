@@ -27,7 +27,7 @@ variable "control-type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.28.8+rke2r1"
+	default = "v1.28.9-rc4+rke2r1"
 }
 
 # Number of nodes

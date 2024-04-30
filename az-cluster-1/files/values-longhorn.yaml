@@ -6,4 +6,6 @@ defaultSettings:
 metrics:
   serviceMonitor:
     enabled: true
+persistence:
+  defaultClassReplicaCount: 2
 

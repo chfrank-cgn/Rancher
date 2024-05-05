@@ -20,6 +20,7 @@ spec:
           image: prom/prometheus
           args:
             - "--storage.tsdb.retention.time=12h"
+            - "--storage.tsdb.retention.size=2GB"
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
           ports:
@@ -43,7 +44,7 @@ spec:
             name: prometheus-server-conf
         - name: prometheus-storage-volume
           emptyDir:
-            medium: Memory
+            sizeLimit: 4Gi
 ---
 apiVersion: v1
 kind: Service

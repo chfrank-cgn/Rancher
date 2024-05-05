@@ -1,0 +1,158 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: retina-operator
+  namespace:  monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: retina-operator-role
+  namespace:  monitoring
+rules:
+  - apiGroups: 
+      - "apiextensions.k8s.io"
+    resources: 
+      - "customresourcedefinitions"
+    verbs: 
+      - "create"
+      - "get"
+      - "update"
+      - "delete"
+      - "patch"
+  - apiGroups:
+    - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+    - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - retina.sh
+    resources:
+      - retinaendpoints
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - retina.sh
+    resources:
+      - metricsconfigurations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - retina.sh
+    resources:
+      - metricsconfigurations/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - retina.sh
+    resources:
+      - retinaendpoints/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - retina.sh
+    resources:
+      - retinaendpoints/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+    - namespaces
+    - pods
+    - nodes
+    - secrets
+    verbs:
+    - get
+    - list
+  - apiGroups:
+      - batch
+    resources:
+    - jobs
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+      - batch
+    resources:
+    - jobs/status
+    verbs:
+    - get
+  - apiGroups:
+    - retina.sh
+    resources:
+    - captures
+    verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+      - retina.sh
+    resources:
+    - captures/finalizers
+    verbs:
+    - update
+  - apiGroups:
+      - retina.sh
+    resources:
+    - captures/status
+    verbs:
+    - get
+    - patch
+    - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: retina-operator-rolebinding
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: retina-operator-role
+subjects:
+- kind: ServiceAccount
+  name: retina-operator
+  namespace: monitoring
+

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retina-operator
+  namespace: monitoring
+  labels:
+    app: retina-operator
+    control-plane: retina-operator
+spec:
+  selector:
+    matchLabels:
+      control-plane: retina-operator
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: retina-operator
+      labels:
+        app: retina-operator
+        control-plane: retina-operator
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - command:
+            - /retina-operator
+          image: ghcr.io/microsoft/retina/retina-operator:v0.0.10
+          name: retina-operator
+          volumeMounts:
+            - name: retina-operator-config
+              mountPath: /retina/
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 128Mi
+      serviceAccountName: retina-operator
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: retina-operator-config
+          configMap:
+            name: retina-operator-config
+

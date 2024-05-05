@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: retina-operator-config
+  namespace: monitoring
+data:
+  operator-config.yaml: |-
+    installCRDs: true
+    enableRetinaEndpoint: true
+    enableTelemetry: false
+    remoteContext: true
+    captureDebug: true
+    captureJobNumLimit: 0
+

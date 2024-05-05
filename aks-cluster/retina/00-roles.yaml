@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: retina-agent
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: monitoring
+  name: retina-cluster-reader
+rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["pods", "services", "replicationcontrollers", "nodes", "namespaces"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["networking.azure.com"]
+    resources: ["clusterobservers"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - retina.sh
+    resources:
+      - retinaendpoints
+      - retinaendpoints/status
+      - metricsconfigurations
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: retina-cluster-reader-binding
+  namespace: monitoring
+subjects:
+  - kind: ServiceAccount
+    name: retina-agent
+    namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: retina-cluster-reader
+  apiGroup: rbac.authorization.k8s.io
+

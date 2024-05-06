@@ -7,7 +7,7 @@ Here is a quick setup for the Retina Kubernetes Network Observability stack, usi
 
 ## Retina Agent
 
-The first part of the observability stack in the Retina Agent:
+The first part of the observability stack is the Retina Agent:
 
 - `00-roles.yaml` has the agent service account and role bindings
 - `01-config.yaml` has the agent configuration

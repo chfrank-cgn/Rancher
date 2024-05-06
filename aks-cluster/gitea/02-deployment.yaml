@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - name: gitea
+        image: gitea/gitea:latest
+        env:
+        - name: GITEA__repository__ENABLE_PUSH_CREATE_USER
+          value: "true"
+        - name: GITEA__repository__ENABLE_PUSH_CREATE_ORG
+          value: "true"
+        - name: GITEA__repository__ONLY_ALLOW_PUSH_IF_GITEA_ENVIRONMENT_SET
+          value: "false"
+        ports:
+        - containerPort: 3000
+          name: gitea-web
+        - containerPort: 22
+          name: gitea-ssh
+        volumeMounts:
+        - mountPath: /data
+          name: gitea-volume
+      volumes:
+      - name: gitea-volume
+        emptyDir:
+          medium: Memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  type: ClusterIP
+  selector:
+    app: gitea
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: gitea-web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: gitea.ingress.host
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: gitea
+            port:
+              number: 80
+

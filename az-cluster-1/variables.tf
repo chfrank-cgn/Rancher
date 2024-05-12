@@ -27,7 +27,7 @@ variable "control-type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.28.9-rc4+rke2r1"
+	default = "v1.28.9+rke2r1"
 }
 
 # Number of nodes
@@ -42,12 +42,12 @@ variable "numagent" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "103.0.4"
+	default = "103.1.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "103.1.0"
+	default = "103.1.1"
 }
 
 # Longhorn chart

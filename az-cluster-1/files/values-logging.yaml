@@ -1,0 +1,4 @@
+additionalLoggingSources:
+  rke2:
+    enabled: true
+

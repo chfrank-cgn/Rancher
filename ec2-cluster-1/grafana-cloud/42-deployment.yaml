@@ -19,7 +19,7 @@ spec:
       serviceAccountName: retina-agent
       initContainers:
         - name: init-retina
-          image: ghcr.io/microsoft/retina/retina-init:v0.0.5
+          image: ghcr.io/microsoft/retina/retina-init:v0.0.11
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: FallbackToLogsOnError
           securityContext:
@@ -36,7 +36,7 @@ spec:
               port: 10093
             initialDelaySeconds: 30
             periodSeconds: 30
-          image: ghcr.io/microsoft/retina/retina-agent:v0.0.5
+          image: ghcr.io/microsoft/retina/retina-agent:v0.0.11
           imagePullPolicy: IfNotPresent
           command:
           - /retina/controller

@@ -17,7 +17,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.27.12-rancher1-1"
+	default = "v1.28.9-rancher1-1"
 }
 
 # Docker version
@@ -32,17 +32,17 @@ variable "numnodes" {
 
 # Monitoring chart
 variable "monchart" {
-	default = "103.0.4"
+	default = "103.1.0"
 }
 
 # Logging chart
 variable "logchart" {
-	default = "103.0.1"
+	default = "103.1.1"
 }
 
 # Longhorn chart
 variable "longchart" {
-	default = "103.2.2"
+	default = "103.3.0"
 }
 
 # OPA chart

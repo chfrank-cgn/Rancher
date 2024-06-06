@@ -32,7 +32,7 @@ variable "logchart" {
 
 # OPA chart
 variable "opachart" {
-        default = "103.1.0"
+        default = "103.2.0"
 }
 
 # CIS Benchmarks chart

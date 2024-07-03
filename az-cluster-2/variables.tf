@@ -7,7 +7,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.28.8+rke2r1"
+	default = "v1.28.10+rke2r1"
 }
 
 # Number of nodes
@@ -17,7 +17,7 @@ variable "numnodes" {
 
 # Logging chart
 variable "logchart" {
-	default = "103.0.1"
+	default = "103.1.1"
 }
 
 # Bitnami URL

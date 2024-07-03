@@ -12,11 +12,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.105"
+      version = "~> 3.110"
     }
     kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "~> 2.30"
+      version = "~> 2.31"
     }
     local = {
       source  = "hashicorp/local"

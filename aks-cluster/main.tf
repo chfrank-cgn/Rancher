@@ -16,7 +16,7 @@ resource "azurerm_kubernetes_cluster" "cluster_az" {
   # spec:
   #  ingressClassName: webapprouting.kubernetes.azure.com
   web_app_routing {
-    dns_zone_id = ""
+    dns_zone_ids = []
   }
 
   default_node_pool {

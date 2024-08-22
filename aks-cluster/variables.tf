@@ -27,7 +27,7 @@ variable "k8version" {
 
 # Logging chart
 variable "logchart" {
-        default = "103.1.1"
+        default = "103.1.2"
 }
 
 # OPA chart
@@ -37,7 +37,7 @@ variable "opachart" {
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "5.2.0"
+        default = "5.3.0"
 }
 
 # Bitnami URL

@@ -7,7 +7,7 @@ variable "type" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "v1.28.10+rke2r1"
+	default = "v1.28.12+rke2r1"
 }
 
 # Number of nodes

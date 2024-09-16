@@ -260,6 +260,14 @@ resource "kubernetes_deployment" "cattle_cluster_agent" {
             name  = "CATTLE_INGRESS_IP_DOMAIN"
             value = "sslip.io"
           }
+          env {
+            name  = "CATTLE_AGENT_FALLBACK_PATH"
+            value = "/opt/rke2/bin"
+          }
+          env {
+            name  = "STRICT_VERIFY"
+            value = "false"
+          }
           volume_mount {
             name       = "cattle-credentials"
             read_only  = true

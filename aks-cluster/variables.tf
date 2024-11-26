@@ -27,22 +27,27 @@ variable "k8version" {
 
 # Logging chart
 variable "logchart" {
-        default = "104.1.1"
+        default = "105.0.0"
 }
 
 # OPA chart
 variable "opachart" {
-        default = "104.0.0"
+        default = "104.0.1"
 }
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "6.2.0"
+        default = "105.0.0"
 }
 
 # Bitnami URL
 variable "bitnami-url" {
         default = "https://charts.bitnami.com/bitnami"
+}
+
+# Gatekeeper URL
+variable "gatekeeper-url" {
+        default = "https://open-policy-agent.github.io/gatekeeper/charts"
 }
 
 # Prometheus URL

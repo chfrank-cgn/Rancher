@@ -7,11 +7,12 @@ resource "random_id" "instance_id" {
 
 # AKS cluster
 resource "azurerm_kubernetes_cluster" "cluster_az" {
-  name                = "aks-${random_id.instance_id.hex}"
-  location            = var.az-region
-  resource_group_name = var.az-resource-group
-  kubernetes_version  = var.k8version
-  dns_prefix          = "aks-${random_id.instance_id.hex}"
+  name                   = "aks-${random_id.instance_id.hex}"
+  location               = var.az-region
+  resource_group_name    = var.az-resource-group
+  kubernetes_version     = var.k8version
+  dns_prefix             = "aks-${random_id.instance_id.hex}"
+  local_account_disabled = "false"
 
   # spec:
   #  ingressClassName: webapprouting.kubernetes.azure.com
@@ -124,6 +125,30 @@ resource "kubernetes_service_account" "cattle" {
   depends_on = [kubernetes_namespace.cattle_system]
 }
 
+# Cluster role
+resource "kubernetes_cluster_role" "cattle_admin" {
+  lifecycle {
+    ignore_changes = all
+  }
+  metadata {
+    name = "cattle-admin"
+    labels = {
+      "cattle.io/creator" = "norman"
+    }
+  }
+  rule {
+    verbs             = ["*"]
+    api_groups        = ["*"]
+    resources         = ["*"]
+  }
+  rule {
+    verbs             = ["*"]
+    non_resource_urls = ["*"]
+  }
+
+  depends_on = [kubernetes_service_account.cattle]
+}
+
 # Cluster role binding
 resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
   lifecycle {
@@ -149,6 +174,28 @@ resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
   depends_on = [kubernetes_service_account.cattle,kubernetes_cluster_role.cattle_admin]
 }
 
+# Cluster role binding workaround
+resource "kubernetes_cluster_role_binding" "cattle_admin" {
+  lifecycle {
+    ignore_changes = all
+  }
+  metadata {
+    name = "cattle-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "cattle"
+    namespace = "cattle-system"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+
+  depends_on = [kubernetes_service_account.cattle]
+}
+
 # Registration Secret
 resource "kubernetes_secret" "cattle_credentials_az" {
   lifecycle {
@@ -165,30 +212,6 @@ resource "kubernetes_secret" "cattle_credentials_az" {
   type = "Opaque"
 
   depends_on = [kubernetes_namespace.cattle_system]
-}
-
-# Cluster role
-resource "kubernetes_cluster_role" "cattle_admin" {
-  lifecycle {
-    ignore_changes = all
-  }
-  metadata {
-    name = "cattle-admin"
-    labels = {
-      "cattle.io/creator" = "norman"
-    }
-  }
-  rule {
-    verbs      = ["*"]
-    api_groups = ["*"]
-    resources  = ["*"]
-  }
-  rule {
-    verbs             = ["*"]
-    non_resource_urls = ["*"]
-  }
-
-  depends_on = [kubernetes_cluster_role_binding.import_role_binding]
 }
 
 # Deployment
@@ -303,7 +326,7 @@ resource "kubernetes_deployment" "cattle_cluster_agent" {
     }
   }
 
-  depends_on = [kubernetes_secret.cattle_credentials_az,kubernetes_service_account.cattle]
+  depends_on = [kubernetes_secret.cattle_credentials_az,kubernetes_service_account.cattle,kubernetes_cluster_role_binding.cattle_admin,kubernetes_cluster_role_binding.cattle_admin_binding]
 }
 
 # Service definition
@@ -427,6 +450,19 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   depends_on = [rancher2_app_v2.cisbench_az,kubernetes_deployment.cattle_cluster_agent]
 }
 
+# Gatekeeper Catalog
+resource "rancher2_catalog_v2" "gatekeeper_az" {
+
+  lifecycle {
+    ignore_changes = all
+  }
+  cluster_id = rancher2_cluster.cluster_az.id
+  name = "gatekeeper"
+  url = var.gatekeeper-url
+
+  depends_on = [rancher2_catalog_v2.bitnami_az,kubernetes_deployment.cattle_cluster_agent]
+}
+
 # Namespace cleanup
 resource "null_resource" "cleanup" {
   lifecycle {
@@ -437,6 +473,6 @@ resource "null_resource" "cleanup" {
     working_dir = "${path.module}"
   }
 
-  depends_on = [local_file.kubeconfig,rancher2_catalog_v2.bitnami_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [local_file.kubeconfig,rancher2_catalog_v2.gatekeeper_az,kubernetes_deployment.cattle_cluster_agent]
 }
 

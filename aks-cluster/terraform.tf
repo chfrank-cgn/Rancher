@@ -12,11 +12,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.18"
+      version = "~> 4.23"
     }
     kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "~> 2.35"
+      version = "~> 2.36"
     }
     local = {
       source  = "hashicorp/local"
@@ -28,7 +28,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.6"
+      version = "~> 3.7"
     }
     template = {
       source  = "hashicorp/template"
@@ -36,7 +36,7 @@ terraform {
     }
     rancher2 = {
       source  = "rancher/rancher2"
-      version = "~> 5.2"
+      version = "~> 6.1"
     }
   }
 }

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: monitoring
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        env:
+          - name: SPAN_STORAGE_TYPE
+            value: elasticsearch
+          - name: ES_SERVER_URLS
+            value: http://opensearch.monitoring.svc:9200
+        image: jaegertracing/jaeger-query
+        ports:
+          - containerPort: 16685
+          - containerPort: 16686
+          - containerPort: 16687
+        imagePullPolicy: IfNotPresent
+      serviceAccountName: jaeger
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: monitoring
+  labels:
+     app: jaeger
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-query
+      port: 16686
+      targetPort: 16686
+    - name: grpc-query
+      port: 16685
+      targetPort: 16685
+    - name: metrics
+      port: 16687
+      targetPort: 16687
+  selector:
+    app: jaeger
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jaeger-ui
+  namespace: monitoring
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+    - host: jaeger.ingress.host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jaeger
+                port:
+                  number: 16686
+

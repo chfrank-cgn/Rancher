@@ -10,6 +10,7 @@ spec:
   ports:
     - name: otel-traces
       port: 21890
+      targetPort: 21890
     - name: otel-metrics
       port: 21891
       targetPort: 21891
@@ -43,6 +44,7 @@ spec:
         - image: opensearchproject/data-prepper
           name: data-prepper
           ports:
+            - containerPort: 4900
             - containerPort: 21890
             - containerPort: 21891
             - containerPort: 21892

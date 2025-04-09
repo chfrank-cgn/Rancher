@@ -22,6 +22,10 @@ spec:
         ports:
         - containerPort: 4317
         - containerPort: 4318
+        - containerPort: 6831
+        - containerPort: 9411
+        - containerPort: 14250
+        - containerPort: 14268
         volumeMounts:
         - name: config
           mountPath: /etc/config
@@ -49,6 +53,22 @@ spec:
     protocol: TCP
     name: otel-http
     targetPort: 4318
+  - name: zipkin
+    port: 9411
+    targetPort: 9411
+    protocol: TCP
+  - name: jaeger-compact
+    port: 6831
+    targetPort: 6831
+    protocol: UDP
+  - name: jaeger-grpc
+    port: 14250
+    targetPort: 14250
+    protocol: TCP
+  - name: jaeger-thrift
+    port: 14268
+    targetPort: 14268
+    protocol: TCP
   selector:
     app: oteltraces
 

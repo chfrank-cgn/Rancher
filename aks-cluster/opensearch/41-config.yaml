@@ -12,6 +12,12 @@ data:
         protocols:
           grpc:
           http:
+      jaeger:
+        protocols:
+          grpc:
+          thrift_compact:
+          thrift_http:
+      zipkin:
     processors:
       batch/traces:
         timeout: 1s
@@ -24,7 +30,7 @@ data:
     service:
       pipelines:
        traces:
-          receivers: [otlp]
+          receivers: [otlp, jaeger, zipkin]
           processors: [batch/traces]
           exporters: [otlp/data-prepper]
 

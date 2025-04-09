@@ -9,10 +9,7 @@ data:
   config.yaml: |
     receivers:
       k8s_cluster:
-        collection_interval: 30s
-        node_conditions_to_report: [ "Ready", "MemoryPressure", "DiskPressure", "PIDPressure", "NetworkUnavailable" ]
-        allocatable_types_to_report: [ "cpu", "memory", "ephemeral-storage", "storage" ]
-        distribution: kubernetes
+        collection_interval: 10s
       k8s_events:
     exporters:
       otlp/metrics:

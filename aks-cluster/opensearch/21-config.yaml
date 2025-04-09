@@ -12,6 +12,7 @@ data:
       delay: 5000
       source:
         otel_metrics_source:
+          port: 21891
           health_check_service: true
           ssl: false
       buffer:
@@ -19,11 +20,9 @@ data:
           buffer_size: 1024 # max number of records the buffer accepts
           batch_size: 256 # max number of records the buffer drains after each read
       processor:
-        - otel_metrics:
-            calculate_histogram_buckets: true
-            calculate_exponential_histogram_buckets: true
-            exponential_histogram_max_allowed_scale: 10
-            flatten_attributes: false
+        - date:
+            from_time_received: true
+            destination: "@timestamp"
       sink:
         - opensearch:
             hosts: ["http://opensearch.monitoring.svc:9200"]
@@ -36,6 +35,7 @@ data:
       delay: 5000
       source:
         otel_logs_source:
+          port: 21892
           health_check_service: true
           ssl: false
       processor:
@@ -58,6 +58,8 @@ data:
       delay: 5000
       source:
         otel_trace_source:
+          port: 21890
+          health_check_service: true
           ssl: false
           authentication:
             unauthenticated:
@@ -97,7 +99,7 @@ data:
           buffer_size: 1024 # max number of records the buffer accepts
           batch_size: 256 # max number of records the buffer drains after each read
       processor:
-        - service_map_stateful:
+        - service_map:
             window_duration: 180
       sink:
         - opensearch:

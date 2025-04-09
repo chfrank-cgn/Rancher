@@ -6,3 +6,13 @@ spec:
   group: "Monitoring"
   label: Dashboard
   toURL: http://kibana.ingress.host
+---
+apiVersion: ui.cattle.io/v1
+kind: NavLink
+metadata:
+  name: jaeger
+spec:
+  group: "Monitoring"
+  label: Jaeager
+  toURL: http://jaeger.ingress.host
+

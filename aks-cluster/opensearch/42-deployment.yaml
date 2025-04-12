@@ -53,10 +53,6 @@ spec:
     protocol: TCP
     name: otel-http
     targetPort: 4318
-  - name: zipkin
-    port: 9411
-    targetPort: 9411
-    protocol: TCP
   - name: jaeger-compact
     port: 6831
     targetPort: 6831

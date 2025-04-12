@@ -8,8 +8,11 @@ metadata:
 data:
   config.yaml: |
     receivers:
-      k8s_cluster:
+      kubeletstats:
         collection_interval: 10s
+        auth_type: "serviceAccount"
+        endpoint: "https://${env:K8S_NODE_NAME}:10250"
+        insecure_skip_verify: true
       k8s_events:
     exporters:
       otlp/metrics:
@@ -23,7 +26,7 @@ data:
     service:
       pipelines:
         metrics:
-          receivers: [k8s_cluster]
+          receivers: [kubeletstats]
           exporters: [otlp/metrics]
         logs:
           receivers: [k8s_events]

@@ -19,7 +19,12 @@ spec:
       containers:
       - name: otelmetrics
         image: otel/opentelemetry-collector-contrib
-        args: ["--config", "/etc/config/config.yaml"]
+        env:
+        - name: K8S_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        args: ["--config", "/etc/config/config.yaml", "--feature-gates=receiver.kubeletstats.enableCPUUsageMetrics"]
         volumeMounts:
         - name: config
           mountPath: /etc/config

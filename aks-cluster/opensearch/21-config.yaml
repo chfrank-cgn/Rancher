@@ -20,9 +20,7 @@ data:
           buffer_size: 1024 # max number of records the buffer accepts
           batch_size: 256 # max number of records the buffer drains after each read
       processor:
-        - date:
-            from_time_received: true
-            destination: "@timestamp"
+        - otel_metrics:
       sink:
         - opensearch:
             hosts: ["http://opensearch.monitoring.svc:9200"]

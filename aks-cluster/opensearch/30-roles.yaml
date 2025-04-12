@@ -14,13 +14,24 @@ metadata:
     app: otelmetrics
 rules:
 - apiGroups:
+    - metrics.k8s.io
+  resources:
+    - pods
+    - nodes
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
   - ""
   resources:
+  - configmaps
   - events
   - namespaces
   - namespaces/status
   - nodes
   - nodes/spec
+  - nodes/stats
   - pods
   - pods/status
   - replicationcontrollers

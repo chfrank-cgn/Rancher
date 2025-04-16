@@ -20,7 +20,7 @@ Now that we have the data source, we'll install the Dashboard for analysis:
 
 ## Data Prepper
 
-To enable an OpenTelemetry metrics endpoint for OpenSearch, we'll install Data Prepper:
+To process OpenTelemetry data in OpenSearch, we'll install Data Prepper:
 
 - `21-config.yaml` has the configuration
 - `22-deployment.yaml` has the actual deployment
@@ -51,9 +51,9 @@ To visualize traces, we'll install the Jaeger Query UI (work in progress):
 
 To collect Kubernetes events, we'll install the contributed OpenTelemetry collector:
 
-- `30-roles.yaml` has the service account and role bindings
-- `31-config.yaml` has the configuration
-- `32-deployment.yaml` has the actual daemon set
+- `60-roles.yaml` has the service account and role bindings
+- `61-config.yaml` has the configuration
+- `62-deployment.yaml` has the actual daemon set
 
 ## Syslog forwarding 
 

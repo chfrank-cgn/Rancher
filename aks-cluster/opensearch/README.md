@@ -20,31 +20,46 @@ Now that we have the data source, we'll install the Dashboard for analysis:
 
 ## Data Prepper
 
-To enable an OpenTelemetry metrics endpoint, we'll install Data Prepper:
+To enable an OpenTelemetry metrics endpoint for OpenSearch, we'll install Data Prepper:
 
 - `21-config.yaml` has the configuration
 - `22-deployment.yaml` has the actual deployment
 
-## OpenTelemetry Contributed Collector
+## OpenTelemetry Contributed Collector - Metrics
 
-To collect Kubernetes metrics and events, we'll install the contributed OpenTelemetry collector:
+To collect Kubernetes metrics, we'll install the contributed OpenTelemetry collector:
 
 - `30-roles.yaml` has the service account and role bindings
 - `31-config.yaml` has the configuration
-- `32-deployment.yaml` has the actual deployment
+- `32-deployment.yaml` has the actual daemon set
 
-## OpenTelemetry Collector
+## OpenTelemetry Collector - Traces
 
 To collect application traces, we'll install the regular OpenTelemetry collector:
 
 - `41-config.yaml` has the configuration
 - `42-deployment.yaml` has the actual deployment
 
+## Jaeger
+
+To visualize traces, we'll install the Jaeger Query UI (work in progress):
+
+- `50-roles.yaml` has the service account and role bindings
+- `52-deployment.yaml` has the actual deployment
+
+## OpenTelemetry Contributed Collector - Events
+
+To collect Kubernetes events, we'll install the contributed OpenTelemetry collector:
+
+- `30-roles.yaml` has the service account and role bindings
+- `31-config.yaml` has the configuration
+- `32-deployment.yaml` has the actual daemon set
+
 ## Syslog forwarding 
 
 To collect logs, we will configure Rancher's logging operator:
 
-- `51-config.yaml` has the cluster flow and output
+- `71-config.yaml` has the cluster flow and output
 
 ## Navigation Link
 

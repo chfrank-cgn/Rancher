@@ -13,14 +13,9 @@ data:
         auth_type: "serviceAccount"
         endpoint: "https://${env:K8S_NODE_NAME}:10250"
         insecure_skip_verify: true
-      k8s_events:
     exporters:
       otlp/metrics:
         endpoint: data-prepper.monitoring.svc:21891
-        tls:
-          insecure: true
-      otlp/logs:
-        endpoint: data-prepper.monitoring.svc:21892
         tls:
           insecure: true
     service:
@@ -28,7 +23,4 @@ data:
         metrics:
           receivers: [kubeletstats]
           exporters: [otlp/metrics]
-        logs:
-          receivers: [k8s_events]
-          exporters: [otlp/logs]
 

@@ -1,49 +1,22 @@
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: ClusterFlow
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: all-logs
-  namespace: cattle-logging-system
-spec:
-  globalOutputRefs:
-    - syslog
-    - opensearch
----
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: ClusterOutput
-metadata:
-  name: syslog
-  namespace: cattle-logging-system
-spec:
-  syslog:
-    buffer:
-      timekey: 30s
-      timekey_use_utc: true
-      timekey_wait: 10s
-      flush_interval: 5s
-      flush_mode: interval
-    format:
-      type: out_file
-    host: rancher.syslog.host
-    insecure: true
-    port: 601
-    transport: tcp
----
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: ClusterOutput
-metadata:
-  name: opensearch
-  namespace: cattle-logging-system
-spec:
-  opensearch:
-    buffer:
-      timekey: 30s
-      timekey_use_utc: true
-      timekey_wait: 10s
-      flush_interval: 5s
-      flush_mode: interval
-    host: opensearch.monitoring.svc
-    logstash_format: true
-    port: 9200
-    scheme: http
-    suppress_type_name: true
+  name: otelevents
+  namespace: monitoring
+  labels:
+    app: otelevents
+data:
+  config.yaml: |
+    receivers:
+      k8s_events:
+    exporters:
+      otlp/logs:
+        endpoint: data-prepper.monitoring.svc:21892
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        logs:
+          receivers: [k8s_events]
+          exporters: [otlp/logs]
 

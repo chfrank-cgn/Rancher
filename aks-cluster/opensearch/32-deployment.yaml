@@ -1,12 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: otelmetrics
   namespace: monitoring
   labels:
     app: otelmetrics
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: otelmetrics

@@ -18,17 +18,25 @@ spec:
       containers:
       - name: jaeger
         env:
-          - name: SPAN_STORAGE_TYPE
-            value: elasticsearch
-          - name: ES_SERVER_URLS
-            value: http://opensearch.monitoring.svc:9200
-        image: jaegertracing/jaeger-query
+          - name: COLLECTOR_OTLP_ENABLED
+            value: "true"
+        image: jaegertracing/jaeger
+        args: ["--config", "/etc/jaeger/config.yaml"]
         ports:
+          - containerPort: 4317
+          - containerPort: 4318
           - containerPort: 16685
           - containerPort: 16686
           - containerPort: 16687
+        volumeMounts:
+        - name: user-config
+          mountPath: /etc/jaeger
         imagePullPolicy: IfNotPresent
       serviceAccountName: jaeger
+      volumes:
+        - name: user-config
+          configMap:
+            name: jaeger
 ---
 apiVersion: v1
 kind: Service
@@ -40,6 +48,12 @@ metadata:
 spec:
   type: ClusterIP
   ports:
+    - port: 4317
+      name: otel-grpc
+      targetPort: 4317
+    - port: 4318
+      name: otel-http
+      targetPort: 4318
     - name: http-query
       port: 16686
       targetPort: 16686

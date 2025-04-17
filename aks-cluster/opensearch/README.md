@@ -40,11 +40,12 @@ To collect application traces, we'll install the regular OpenTelemetry collector
 - `41-config.yaml` has the configuration
 - `42-deployment.yaml` has the actual deployment
 
-## Jaeger
+## Jaeger v2
 
-To visualize traces, we'll install the Jaeger Query UI (work in progress):
+To visualize traces, we'll install Jaeger:
 
 - `50-roles.yaml` has the service account and role bindings
+- `51-config.yaml` has the configuration
 - `52-deployment.yaml` has the actual deployment
 
 ## OpenTelemetry Contributed Collector - Events

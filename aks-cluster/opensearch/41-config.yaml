@@ -31,10 +31,14 @@ data:
         endpoint: data-prepper.monitoring.svc:21890
         tls:
           insecure: true
+      otlp/jaeger:
+        endpoint: jaeger.monitoring.svc:4317
+        tls:
+          insecure: true
     service:
       pipelines:
        traces:
           receivers: [otlp, jaeger]
           processors: [batch/traces]
-          exporters: [otlp/data-prepper]
+          exporters: [otlp/data-prepper, otlp/jaeger]
 

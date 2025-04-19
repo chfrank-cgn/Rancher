@@ -23,7 +23,7 @@ spec:
       flush_mode: interval
     format:
       type: out_file
-    host: rancher.chfrank.net
+    host: rancher.syslog.host
     insecure: true
     port: 601
     transport: tcp

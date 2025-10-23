@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hauler-data
+  namespace: hauler-system
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 24Gi
+  storageClassName: azurefile
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hauler-manifest
+  namespace: hauler-system
+data:
+  hauler-manifest.yaml: |
+    apiVersion: content.hauler.cattle.io/v1
+    kind: Images
+    metadata:
+      name: rancher-minimal
+      annotations:
+        hauler.dev/platform: linux/amd64
+    spec:
+      images:
+        - name: rancher/rancher:v2.11.3
+        - name: rancher/rancher-webhook:v0.7.3
+        - name: rancher/fleet:v0.12.4
+        - name: rancher/fleet-agent:v0.12.4
+        - name: rancher/shell:v0.4.1
+        - name: rancher/mirrored-cluster-api-controller:v1.9.5
+        - name: rancher/kubectl:v1.32.2
+        - name: ghcr.io/flannel-io/flannel:v0.26.4
+        - name: ghcr.io/flannel-io/flannel-cni-plugin:v1.6.2-flannel1
+        - name: registry.k8s.io/metrics-server/metrics-server:v0.7.2
+        - name: registry.k8s.io/pause:3.10
+

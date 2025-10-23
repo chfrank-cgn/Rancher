@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hauler-init
+  namespace: hauler-system
+spec:
+  ttlSecondsAfterFinished: 120
+  template:
+    spec:
+      containers:
+        - name: hauler-init
+          image: hauler/hauler:1.3.0
+          args: ["store", "sync", "--filename", "config/hauler-manifest.yaml"]
+          volumeMounts:
+            - name: hauler-data
+              mountPath: /store
+            - name: hauler-manifest
+              mountPath: /config
+      restartPolicy: Never
+      serviceAccountName: hauler-service-account
+      volumes:
+        - name: hauler-data
+          persistentVolumeClaim:
+            claimName: hauler-data
+        - name: hauler-manifest
+          configMap:
+            name: hauler-manifest
+

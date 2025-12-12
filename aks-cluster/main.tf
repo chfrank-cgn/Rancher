@@ -40,7 +40,7 @@ resource "rancher2_cluster" "cluster_az" {
 }
 
 # Cluster role binding
-resource "kubernetes_cluster_role_binding" "import_role_binding" {
+resource "kubernetes_cluster_role_binding_v1" "import_role_binding" {
   metadata {
     name = "cluster-admin-binding"
   }
@@ -63,7 +63,7 @@ resource "kubernetes_cluster_role_binding" "import_role_binding" {
 #
 
 # Cluster role
-resource "kubernetes_cluster_role" "proxy_clusterrole_kubeapiserver" {
+resource "kubernetes_cluster_role_v1" "proxy_clusterrole_kubeapiserver" {
   lifecycle {
     ignore_changes = all
   }
@@ -76,11 +76,11 @@ resource "kubernetes_cluster_role" "proxy_clusterrole_kubeapiserver" {
     resources  = ["nodes/metrics", "nodes/proxy", "nodes/stats", "nodes/log", "nodes/spec"]
   }
 
-  depends_on = [kubernetes_cluster_role_binding.import_role_binding]
+  depends_on = [kubernetes_cluster_role_binding_v1.import_role_binding]
 }
 
 # Cluster role binding
-resource "kubernetes_cluster_role_binding" "proxy_role_binding_kubernetes_master" {
+resource "kubernetes_cluster_role_binding_v1" "proxy_role_binding_kubernetes_master" {
   lifecycle {
     ignore_changes = all
   }
@@ -97,11 +97,11 @@ resource "kubernetes_cluster_role_binding" "proxy_role_binding_kubernetes_master
     name      = "proxy-clusterrole-kubeapiserver"
   }
 
-  depends_on = [kubernetes_cluster_role_binding.import_role_binding]
+  depends_on = [kubernetes_cluster_role_binding_v1.import_role_binding]
 }
 
 # Namespace
-resource "kubernetes_namespace" "cattle_system" {
+resource "kubernetes_namespace_v1" "cattle_system" {
   lifecycle {
     ignore_changes = all
   }
@@ -109,11 +109,11 @@ resource "kubernetes_namespace" "cattle_system" {
     name = "cattle-system"
   }
 
-  depends_on = [kubernetes_cluster_role_binding.import_role_binding]
+  depends_on = [kubernetes_cluster_role_binding_v1.import_role_binding]
 }
 
 # Service account
-resource "kubernetes_service_account" "cattle" {
+resource "kubernetes_service_account_v1" "cattle" {
   lifecycle {
     ignore_changes = all
   }
@@ -122,11 +122,11 @@ resource "kubernetes_service_account" "cattle" {
     namespace = "cattle-system"
   }
 
-  depends_on = [kubernetes_namespace.cattle_system]
+  depends_on = [kubernetes_namespace_v1.cattle_system]
 }
 
 # Cluster role
-resource "kubernetes_cluster_role" "cattle_admin" {
+resource "kubernetes_cluster_role_v1" "cattle_admin" {
   lifecycle {
     ignore_changes = all
   }
@@ -146,11 +146,11 @@ resource "kubernetes_cluster_role" "cattle_admin" {
     non_resource_urls = ["*"]
   }
 
-  depends_on = [kubernetes_service_account.cattle]
+  depends_on = [kubernetes_service_account_v1.cattle]
 }
 
 # Cluster role binding
-resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
+resource "kubernetes_cluster_role_binding_v1" "cattle_admin_binding" {
   lifecycle {
     ignore_changes = all
   }
@@ -171,11 +171,11 @@ resource "kubernetes_cluster_role_binding" "cattle_admin_binding" {
     name      = "cattle-admin"
   }
 
-  depends_on = [kubernetes_service_account.cattle,kubernetes_cluster_role.cattle_admin]
+  depends_on = [kubernetes_service_account_v1.cattle,kubernetes_cluster_role_v1.cattle_admin]
 }
 
 # Cluster role binding workaround
-resource "kubernetes_cluster_role_binding" "cattle_admin" {
+resource "kubernetes_cluster_role_binding_v1" "cattle_admin" {
   lifecycle {
     ignore_changes = all
   }
@@ -193,11 +193,11 @@ resource "kubernetes_cluster_role_binding" "cattle_admin" {
     name      = "cluster-admin"
   }
 
-  depends_on = [kubernetes_service_account.cattle]
+  depends_on = [kubernetes_service_account_v1.cattle]
 }
 
 # Registration Secret
-resource "kubernetes_secret" "cattle_credentials_az" {
+resource "kubernetes_secret_v1" "cattle_credentials_az" {
   lifecycle {
     ignore_changes = all
   }
@@ -211,11 +211,11 @@ resource "kubernetes_secret" "cattle_credentials_az" {
   }
   type = "Opaque"
 
-  depends_on = [kubernetes_namespace.cattle_system]
+  depends_on = [kubernetes_namespace_v1.cattle_system]
 }
 
 # Deployment
-resource "kubernetes_deployment" "cattle_cluster_agent" {
+resource "kubernetes_deployment_v1" "cattle_cluster_agent" {
   lifecycle {
     ignore_changes = all
   }
@@ -326,11 +326,11 @@ resource "kubernetes_deployment" "cattle_cluster_agent" {
     }
   }
 
-  depends_on = [kubernetes_secret.cattle_credentials_az,kubernetes_service_account.cattle,kubernetes_cluster_role_binding.cattle_admin,kubernetes_cluster_role_binding.cattle_admin_binding]
+  depends_on = [kubernetes_secret_v1.cattle_credentials_az,kubernetes_service_account_v1.cattle,kubernetes_cluster_role_binding_v1.cattle_admin,kubernetes_cluster_role_binding_v1.cattle_admin_binding]
 }
 
 # Service definition
-resource "kubernetes_service" "cattle_cluster_agent" {
+resource "kubernetes_service_v1" "cattle_cluster_agent" {
   lifecycle {
     ignore_changes = all
   }
@@ -356,7 +356,7 @@ resource "kubernetes_service" "cattle_cluster_agent" {
     }
   }
 
-  depends_on = [kubernetes_namespace.cattle_system]
+  depends_on = [kubernetes_namespace_v1.cattle_system]
 }
 
 #
@@ -402,7 +402,7 @@ resource "rancher2_app_v2" "syslog_az" {
   chart_version = var.logchart
   values = templatefile("${path.module}/files/values-logging.yaml", {})
 
-  depends_on = [local_file.kubeconfig,kubernetes_deployment.cattle_cluster_agent,rancher2_cluster.cluster_az,azurerm_kubernetes_cluster.cluster_az]
+  depends_on = [local_file.kubeconfig,kubernetes_deployment_v1.cattle_cluster_agent,rancher2_cluster.cluster_az,azurerm_kubernetes_cluster.cluster_az]
 }
 
 # OPA Gatekeeper
@@ -419,7 +419,7 @@ resource "rancher2_app_v2" "gatekeeper_az" {
   chart_version = var.opachart
   values = templatefile("${path.module}/files/values-gatekeeper.yaml", {})
 
-  depends_on = [rancher2_app_v2.syslog_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_app_v2.syslog_az,kubernetes_deployment_v1.cattle_cluster_agent]
 }
 
 # CIS Benchmarks
@@ -435,7 +435,7 @@ resource "rancher2_app_v2" "cisbench_az" {
   chart_name = "rancher-cis-benchmark"
   chart_version = var.cischart
 
-  depends_on = [rancher2_app_v2.gatekeeper_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_app_v2.gatekeeper_az,kubernetes_deployment_v1.cattle_cluster_agent]
 }
 
 # Bitnami Catalog
@@ -447,7 +447,7 @@ resource "rancher2_catalog_v2" "bitnami_az" {
   name = "bitnami"
   url = var.bitnami-url
 
-  depends_on = [rancher2_app_v2.cisbench_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_app_v2.cisbench_az,kubernetes_deployment_v1.cattle_cluster_agent]
 }
 
 # Gatekeeper Catalog
@@ -460,7 +460,7 @@ resource "rancher2_catalog_v2" "gatekeeper_az" {
   name = "gatekeeper"
   url = var.gatekeeper-url
 
-  depends_on = [rancher2_catalog_v2.bitnami_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [rancher2_catalog_v2.bitnami_az,kubernetes_deployment_v1.cattle_cluster_agent]
 }
 
 # Namespace cleanup
@@ -473,6 +473,6 @@ resource "null_resource" "cleanup" {
     working_dir = "${path.module}"
   }
 
-  depends_on = [local_file.kubeconfig,rancher2_catalog_v2.gatekeeper_az,kubernetes_deployment.cattle_cluster_agent]
+  depends_on = [local_file.kubeconfig,rancher2_catalog_v2.gatekeeper_az,kubernetes_deployment_v1.cattle_cluster_agent]
 }
 

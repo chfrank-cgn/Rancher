@@ -36,6 +36,9 @@ resource "azurerm_kubernetes_cluster" "cluster_az" {
 # Rancher cluster
 resource "rancher2_cluster" "cluster_az" {
   name         = "aks-${random_id.instance_id.hex}"
+  annotations = {
+    "rancher.io/imported-cluster-version-management" = "false" 
+  }
   description  = "Terraform"
 }
 
@@ -432,7 +435,7 @@ resource "rancher2_app_v2" "cisbench_az" {
   namespace = "cis-operator-system"
   project_id = data.rancher2_project.system.id
   repo_name = "rancher-charts"
-  chart_name = "rancher-cis-benchmark"
+  chart_name = "rancher-compliance"
   chart_version = var.cischart
 
   depends_on = [rancher2_app_v2.gatekeeper_az,kubernetes_deployment_v1.cattle_cluster_agent]

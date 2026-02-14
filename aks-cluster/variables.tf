@@ -22,12 +22,12 @@ variable "az-region" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.32"
+	default = "1.33"
 }
 
 # Logging chart
 variable "logchart" {
-        default = "106.0.2"
+        default = "107.0.2"
 }
 
 # OPA chart
@@ -37,7 +37,7 @@ variable "opachart" {
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "106.0.0"
+        default = "107.2.0"
 }
 
 # Bitnami URL
@@ -76,4 +76,8 @@ variable "az-client-secret" { }
 variable "az-subscription-id" { }
 
 variable "az-tenant-id" { }
+
+variable "appco-user" { }
+
+variable "appco-token" { }
 

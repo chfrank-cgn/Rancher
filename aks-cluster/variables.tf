@@ -2,7 +2,7 @@
 
 # Node type
 variable "type" {
-	default = "Standard_D4as_v4"
+	default = "Standard_D8as_v4"
 }
 
 # Number of nodes
@@ -22,12 +22,12 @@ variable "az-region" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.33"
+	default = "1.34"
 }
 
 # Logging chart
 variable "logchart" {
-        default = "107.0.2"
+        default = "108.0.3"
 }
 
 # OPA chart
@@ -37,7 +37,7 @@ variable "opachart" {
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "107.2.0"
+        default = "108.3.0"
 }
 
 # Bitnami URL
@@ -50,15 +50,10 @@ variable "gatekeeper-url" {
         default = "https://open-policy-agent.github.io/gatekeeper/charts"
 }
 
-# Prometheus URL
-# variable "prometheus-url" {
-#         default = "https://prometheus-community.github.io/helm-charts"
-# }
-
-# Grafana URL
-# variable "grafana-url" {
-#         default = "https://grafana.github.io/helm-charts"
-# }
+# Application Collection URL
+variable "appco-url" {
+        default = "oci://dp.apps.rancher.io/charts"
+}
 
 # Hack: Time to wait for Kubernetes to deploy
 variable "delaysec" {

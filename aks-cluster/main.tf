@@ -20,6 +20,10 @@ resource "azurerm_kubernetes_cluster" "cluster_az" {
     dns_zone_ids = []
   }
 
+  node_provisioning_profile {
+    mode  = "Auto"
+    default_node_pools = "Auto"
+  }
   default_node_pool {
     name       = "agent${random_id.instance_id.hex}"
     node_count = var.numnodes

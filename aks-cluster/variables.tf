@@ -22,12 +22,12 @@ variable "az-region" {
 
 # Kubernetes version
 variable "k8version" {
-	default = "1.34"
+	default = "1.35"
 }
 
 # Logging chart
 variable "logchart" {
-        default = "108.0.3"
+        default = "109.0.0"
 }
 
 # OPA chart
@@ -37,7 +37,7 @@ variable "opachart" {
 
 # CIS Benchmarks chart
 variable "cischart" {
-        default = "108.3.0"
+        default = "109.3.0"
 }
 
 # Bitnami URL
